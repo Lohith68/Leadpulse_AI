@@ -1,0 +1,187 @@
+import React, { useState } from 'react';
+import { Megaphone, Plus, DollarSign, Users, Award, TrendingUp } from 'lucide-react';
+import { useCRM } from '../../context/CRMContext';
+import { Campaign } from '../../types/crm';
+import { Badge } from '../common/Badge';
+import { Modal } from '../common/Modal';
+import { doc, setDoc } from 'firebase/firestore';
+import { db } from '../../firebase/config';
+
+export const CampaignsView: React.FC = () => {
+  const { campaigns } = useCRM();
+
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [name, setName] = useState('');
+  const [type, setType] = useState('Webinar');
+  const [budget, setBudget] = useState(50000);
+
+  const handleCreate = async (e: React.FormEvent) => {
+    e.preventDefault();
+    const id = `CMP-${String(campaigns.length + 1).padStart(6, '0')}`;
+    const now = new Date().toISOString();
+    const newCamp: Campaign = {
+      id,
+      name,
+      type,
+      budget,
+      status: 'ACTIVE',
+      startDate: now,
+      leadsCount: 0,
+      conversionsCount: 0,
+      createdAt: now,
+      updatedAt: now,
+    };
+    await setDoc(doc(db, 'campaigns', id), newCamp);
+    setIsModalOpen(false);
+    setName('');
+  };
+
+  return (
+    <div className="space-y-5">
+      {/* Header */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-white p-5 rounded-xl border border-slate-200 shadow-xs">
+        <div>
+          <div className="flex items-center gap-2">
+            <h1 className="text-xl sm:text-2xl font-black text-slate-900 tracking-tight">
+              Marketing Campaigns
+            </h1>
+            <Badge variant="purple" size="md">
+              {campaigns.length} Initiatives
+            </Badge>
+          </div>
+          <p className="text-xs text-slate-500 mt-0.5">
+            Demand generation programs, marketing attribution, budgets, and lead conversion efficiency
+          </p>
+        </div>
+
+        <button
+          onClick={() => setIsModalOpen(true)}
+          className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-lg bg-purple-700 hover:bg-purple-800 text-white text-xs font-semibold shadow-xs transition-colors"
+        >
+          <Plus className="w-4 h-4" />
+          New Campaign
+        </button>
+      </div>
+
+      {/* Campaign Cards Grid */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        {campaigns.map(camp => {
+          const costPerLead =
+            camp.leadsCount > 0 ? Math.round(camp.budget / camp.leadsCount) : 0;
+          const convRate =
+            camp.leadsCount > 0 ? ((camp.conversionsCount / camp.leadsCount) * 100).toFixed(1) : '0.0';
+
+          return (
+            <div
+              key={camp.id}
+              className="bg-white rounded-xl border border-slate-200 p-5 shadow-xs space-y-4 flex flex-col justify-between"
+            >
+              <div>
+                <div className="flex items-center justify-between mb-2">
+                  <span className="font-mono text-[11px] font-bold text-slate-400">{camp.id}</span>
+                  <Badge variant={camp.status === 'ACTIVE' ? 'success' : 'neutral'}>
+                    {camp.status}
+                  </Badge>
+                </div>
+                <h3 className="text-base font-extrabold text-slate-900 leading-snug">{camp.name}</h3>
+                <span className="text-xs font-semibold text-purple-700 mt-0.5 block">{camp.type}</span>
+              </div>
+
+              <div className="grid grid-cols-2 gap-3 pt-3 border-t border-slate-100 text-xs">
+                <div>
+                  <span className="text-slate-400 block font-medium">Budget:</span>
+                  <span className="font-mono font-bold text-slate-900">
+                    ${(camp.budget / 1000).toFixed(0)}k
+                  </span>
+                </div>
+                <div>
+                  <span className="text-slate-400 block font-medium">Cost / Lead:</span>
+                  <span className="font-mono font-bold text-slate-900">
+                    ${costPerLead}
+                  </span>
+                </div>
+                <div>
+                  <span className="text-slate-400 block font-medium">Leads Ingested:</span>
+                  <span className="font-bold text-slate-900">{camp.leadsCount}</span>
+                </div>
+                <div>
+                  <span className="text-slate-400 block font-medium">Conversions:</span>
+                  <span className="font-bold text-emerald-700">
+                    {camp.conversionsCount} ({convRate}%)
+                  </span>
+                </div>
+              </div>
+            </div>
+          );
+        })}
+      </div>
+
+      {/* Modal */}
+      <Modal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        title="Create Marketing Campaign"
+        subtitle="Track inbound leads generated by this marketing initiative"
+      >
+        <form onSubmit={handleCreate} className="space-y-4 text-xs">
+          <div>
+            <label className="block font-semibold text-slate-700 mb-1">Campaign Name *</label>
+            <input
+              type="text"
+              required
+              value={name}
+              onChange={e => setName(e.target.value)}
+              placeholder="Q4 Enterprise Infrastructure Summit"
+              className="w-full bg-slate-50 border border-slate-200 rounded-lg p-2 text-xs"
+            />
+          </div>
+
+          <div className="grid grid-cols-2 gap-3">
+            <div>
+              <label className="block font-semibold text-slate-700 mb-1">Campaign Type</label>
+              <select
+                value={type}
+                onChange={e => setType(e.target.value)}
+                className="w-full bg-slate-50 border border-slate-200 rounded-lg p-2 text-xs"
+              >
+                <option value="Webinar">Webinar</option>
+                <option value="Outbound Email">Outbound Email</option>
+                <option value="Paid Search">Paid Search</option>
+                <option value="Trade Show">Trade Show</option>
+                <option value="Content Syndication">Content Syndication</option>
+                <option value="Partner Referral">Partner Referral</option>
+              </select>
+            </div>
+
+            <div>
+              <label className="block font-semibold text-slate-700 mb-1">Allocated Budget ($)</label>
+              <input
+                type="number"
+                value={budget}
+                onChange={e => setBudget(Number(e.target.value))}
+                min={1000}
+                className="w-full bg-slate-50 border border-slate-200 rounded-lg p-2 text-xs"
+              />
+            </div>
+          </div>
+
+          <div className="pt-3 border-t border-slate-100 flex justify-end gap-2">
+            <button
+              type="button"
+              onClick={() => setIsModalOpen(false)}
+              className="px-3 py-1.5 rounded-lg border border-slate-200 text-slate-600 font-semibold hover:bg-slate-50"
+            >
+              Cancel
+            </button>
+            <button
+              type="submit"
+              className="px-4 py-1.5 rounded-lg bg-purple-700 hover:bg-purple-800 text-white font-semibold"
+            >
+              Save Campaign
+            </button>
+          </div>
+        </form>
+      </Modal>
+    </div>
+  );
+};

@@ -1,0 +1,296 @@
+{
+  "entities": {
+    "Company": {
+      "title": "Company",
+      "description": "Represents an enterprise account or business organization.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "pattern": "^CO-[0-9]{6}$", "description": "Immutable primary key formatted as CO-000001" },
+        "name": { "type": "string", "minLength": 1, "maxLength": 150 },
+        "domain": { "type": "string", "maxLength": 100 },
+        "industry": { "type": "string", "enum": ["Technology", "Healthcare", "Financial Services", "Manufacturing", "Retail", "Education", "Telecommunications", "Energy"] },
+        "size": { "type": "string", "enum": ["1-10", "11-50", "51-200", "201-500", "501-1000", "1000+"] },
+        "employeeCount": { "type": "number" },
+        "annualRevenue": { "type": "number" },
+        "city": { "type": "string", "maxLength": 100 },
+        "state": { "type": "string", "maxLength": 50 },
+        "country": { "type": "string", "maxLength": 50 },
+        "territory": { "type": "string", "enum": ["North America", "EMEA", "APAC", "LATAM"] },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["id", "name", "domain", "industry", "size", "territory", "createdAt", "updatedAt"]
+    },
+    "Contact": {
+      "title": "Contact",
+      "description": "Individual business contact associated with a company.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "pattern": "^CON-[0-9]{6}$", "description": "Immutable primary key formatted as CON-000001" },
+        "companyId": { "type": "string", "pattern": "^CO-[0-9]{6}$" },
+        "firstName": { "type": "string", "maxLength": 50 },
+        "lastName": { "type": "string", "maxLength": 50 },
+        "email": { "type": "string", "format": "email", "maxLength": 120 },
+        "normalizedEmail": { "type": "string", "maxLength": 120 },
+        "phone": { "type": "string", "maxLength": 30 },
+        "jobTitle": { "type": "string", "maxLength": 100 },
+        "roleLevel": { "type": "string", "enum": ["C-Level", "VP", "Director", "Manager", "Individual Contributor"] },
+        "department": { "type": "string", "maxLength": 50 },
+        "city": { "type": "string", "maxLength": 50 },
+        "country": { "type": "string", "maxLength": 50 },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["id", "companyId", "firstName", "lastName", "email", "normalizedEmail", "jobTitle", "roleLevel", "createdAt", "updatedAt"]
+    },
+    "Campaign": {
+      "title": "Campaign",
+      "description": "Marketing or demand generation campaign.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "pattern": "^CMP-[0-9]{6}$" },
+        "name": { "type": "string", "maxLength": 120 },
+        "type": { "type": "string", "enum": ["Webinar", "Outbound Email", "Paid Search", "Organic Social", "Trade Show", "Content Syndication", "Product Demo", "Partner Referral"] },
+        "budget": { "type": "number" },
+        "status": { "type": "string", "enum": ["PLANNING", "ACTIVE", "PAUSED", "COMPLETED"] },
+        "startDate": { "type": "string", "format": "date-time" },
+        "endDate": { "type": "string", "format": "date-time" },
+        "leadsCount": { "type": "number" },
+        "conversionsCount": { "type": "number" },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["id", "name", "type", "status", "startDate", "createdAt", "updatedAt"]
+    },
+    "SalesRep": {
+      "title": "SalesRep",
+      "description": "Sales representative handling qualified opportunities and leads.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "pattern": "^REP-[0-9]{3,6}$" },
+        "name": { "type": "string", "maxLength": 80 },
+        "email": { "type": "string", "format": "email", "maxLength": 100 },
+        "territory": { "type": "string", "enum": ["North America", "EMEA", "APAC", "LATAM"] },
+        "specialization": { "type": "string", "enum": ["Enterprise Cloud", "Security & Compliance", "Data & AI", "Core CRM", "All Products"] },
+        "capacityLimit": { "type": "number" },
+        "activeLeadsCount": { "type": "number" },
+        "quota": { "type": "number" },
+        "pipelineWon": { "type": "number" },
+        "status": { "type": "string", "enum": ["AVAILABLE", "BUSY", "ON_LEAVE"] },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["id", "name", "email", "territory", "specialization", "status", "capacityLimit", "createdAt", "updatedAt"]
+    },
+    "Lead": {
+      "title": "Lead",
+      "description": "Central prospect record scored and routed through the sales funnel.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "pattern": "^LEAD-2026-[0-9]{6}$", "description": "Immutable primary key formatted as LEAD-2026-000001" },
+        "companyId": { "type": "string", "pattern": "^CO-[0-9]{6}$" },
+        "contactId": { "type": "string", "pattern": "^CON-[0-9]{6}$" },
+        "campaignId": { "type": "string", "pattern": "^CMP-[0-9]{6}$" },
+        "assignedRepId": { "type": "string" },
+        "productInterest": { "type": "string", "enum": ["Enterprise Cloud", "Security & Compliance", "Data & AI", "Core CRM"] },
+        "territory": { "type": "string", "enum": ["North America", "EMEA", "APAC", "LATAM"] },
+        "fitScore": { "type": "number" },
+        "intentScore": { "type": "number" },
+        "engagementScore": { "type": "number" },
+        "totalScore": { "type": "number" },
+        "scoreCategory": { "type": "string", "enum": ["HOT", "WARM", "COLD"] },
+        "scoreBreakdown": { "type": "string", "description": "Transparent JSON explanation of scoring components" },
+        "consentStatus": { "type": "string", "enum": ["OPTED_IN", "OPTED_OUT", "PENDING", "WITHDRAWN"] },
+        "lifecycleStatus": { "type": "string", "enum": ["NEW", "ASSIGNED", "CONTACTED", "QUALIFIED", "CONVERTED", "UNQUALIFIED", "DISQUALIFIED"] },
+        "duplicateGroupId": { "type": "string" },
+        "convertedOpportunityId": { "type": "string" },
+        "conversionTimestamp": { "type": "string", "format": "date-time" },
+        "routingStatus": { "type": "string", "enum": ["ASSIGNED", "UNASSIGNED", "EXCEPTION"] },
+        "routingExceptionReason": { "type": "string" },
+        "lastScoredAt": { "type": "string", "format": "date-time" },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["id", "companyId", "contactId", "fitScore", "intentScore", "engagementScore", "totalScore", "scoreCategory", "consentStatus", "lifecycleStatus", "territory", "createdAt", "updatedAt"]
+    },
+    "Activity": {
+      "title": "Activity",
+      "description": "Chronological lead touchpoint or engagement event.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "pattern": "^ACT-LEAD-2026-[0-9]{6}-[0-9]{3}$" },
+        "leadId": { "type": "string", "pattern": "^LEAD-2026-[0-9]{6}$" },
+        "type": { "type": "string", "enum": ["PRICING_PAGE_VIEW", "DEMO_REQUEST", "PRODUCT_INQUIRY", "PURCHASE_INTENT_FORM", "EMAIL_OPEN", "EMAIL_CLICK", "WEBSITE_VISIT", "EVENT_ATTENDANCE", "RECENT_INTERACTION", "PHONE_CALL", "SALES_NOTE"] },
+        "timestamp": { "type": "string", "format": "date-time" },
+        "metadata": { "type": "string" },
+        "pointsContributed": { "type": "number" },
+        "isPostConversion": { "type": "boolean" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["id", "leadId", "type", "timestamp", "createdAt"]
+    },
+    "Consent": {
+      "title": "Consent",
+      "description": "Explicit GDPR/CCPA regulatory consent tracking event.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "pattern": "^CS-LEAD-2026-[0-9]{6}-[0-9]{3}$" },
+        "leadId": { "type": "string", "pattern": "^LEAD-2026-[0-9]{6}$" },
+        "status": { "type": "string", "enum": ["OPTED_IN", "OPTED_OUT", "PENDING", "WITHDRAWN"] },
+        "channel": { "type": "string", "enum": ["EMAIL", "PHONE", "SMS", "ALL"] },
+        "source": { "type": "string", "enum": ["WEB_FORM", "DOUBLE_OPT_IN", "PREFERENCE_CENTER", "MANUAL_REQUEST", "UNSUBSCRIBE_LINK"] },
+        "notes": { "type": "string" },
+        "timestamp": { "type": "string", "format": "date-time" },
+        "recordedBy": { "type": "string" }
+      },
+      "required": ["id", "leadId", "status", "channel", "source", "timestamp"]
+    },
+    "ScoreRule": {
+      "title": "ScoreRule",
+      "description": "Configurable, effective-dated lead scoring logic rule.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "pattern": "^RULE-[0-9]{3,6}$" },
+        "category": { "type": "string", "enum": ["FIT", "INTENT", "ENGAGEMENT"] },
+        "dimension": { "type": "string" },
+        "maxPoints": { "type": "number" },
+        "criteria": { "type": "string" },
+        "effectiveFrom": { "type": "string", "format": "date-time" },
+        "effectiveTo": { "type": "string", "format": "date-time" },
+        "active": { "type": "boolean" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["id", "category", "dimension", "maxPoints", "active", "effectiveFrom", "createdAt"]
+    },
+    "Task": {
+      "title": "Task",
+      "description": "Sales follow-up automated SLA action item.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "pattern": "^TASK-LEAD-2026-[0-9]{6}-[0-9]{3}$" },
+        "leadId": { "type": "string", "pattern": "^LEAD-2026-[0-9]{6}$" },
+        "assignedRepId": { "type": "string" },
+        "title": { "type": "string", "maxLength": 150 },
+        "dueBusinessDays": { "type": "number" },
+        "dueDate": { "type": "string", "format": "date-time" },
+        "priority": { "type": "string", "enum": ["URGENT_1_DAY", "HIGH_3_DAY", "NORMAL_NURTURE"] },
+        "status": { "type": "string", "enum": ["PENDING", "IN_PROGRESS", "COMPLETED", "OVERDUE", "CANCELLED"] },
+        "completedAt": { "type": "string", "format": "date-time" },
+        "idempotencyKey": { "type": "string" },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["id", "leadId", "title", "dueDate", "priority", "status", "idempotencyKey", "createdAt", "updatedAt"]
+    },
+    "Opportunity": {
+      "title": "Opportunity",
+      "description": "Qualified sales deal generated from a lead.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "pattern": "^OPP-2026-[0-9]{6}$", "description": "Immutable primary key formatted as OPP-2026-000001" },
+        "leadId": { "type": "string", "pattern": "^LEAD-2026-[0-9]{6}$" },
+        "companyId": { "type": "string", "pattern": "^CO-[0-9]{6}$" },
+        "contactId": { "type": "string", "pattern": "^CON-[0-9]{6}$" },
+        "assignedRepId": { "type": "string" },
+        "name": { "type": "string", "maxLength": 150 },
+        "value": { "type": "number" },
+        "stage": { "type": "string", "enum": ["NEW", "QUALIFIED", "PROPOSAL", "NEGOTIATION", "WON", "LOST"] },
+        "expectedCloseDate": { "type": "string", "format": "date-time" },
+        "actualCloseDate": { "type": "string", "format": "date-time" },
+        "wonReason": { "type": "string" },
+        "lostReason": { "type": "string" },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["id", "leadId", "companyId", "contactId", "name", "value", "stage", "expectedCloseDate", "createdAt", "updatedAt"]
+    },
+    "StageHistory": {
+      "title": "StageHistory",
+      "description": "Immutable audit record for each opportunity stage progression.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "pattern": "^STG-OPP-2026-[0-9]{6}-[0-9]{3}$" },
+        "opportunityId": { "type": "string", "pattern": "^OPP-2026-[0-9]{6}$" },
+        "fromStage": { "type": "string", "enum": ["START", "NEW", "QUALIFIED", "PROPOSAL", "NEGOTIATION"] },
+        "toStage": { "type": "string", "enum": ["NEW", "QUALIFIED", "PROPOSAL", "NEGOTIATION", "WON", "LOST"] },
+        "durationDays": { "type": "number" },
+        "transitionReason": { "type": "string" },
+        "changedBy": { "type": "string" },
+        "timestamp": { "type": "string", "format": "date-time" }
+      },
+      "required": ["id", "opportunityId", "toStage", "timestamp"]
+    },
+    "Anomaly": {
+      "title": "Anomaly",
+      "description": "Detected integrity violation, consent violation, or leakage in sales operations.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "type": { "type": "string", "enum": ["OPTED_OUT_LEAD_CONTACTED", "POST_CONVERSION_ACTIVITY_USED_IN_SCORE", "LEAD_ASSIGNED_OUTSIDE_TERRITORY", "DUPLICATE_OPPORTUNITY_CREATED", "STAGE_HISTORY_GAP"] },
+        "severity": { "type": "string", "enum": ["CRITICAL", "HIGH", "MEDIUM", "LOW"] },
+        "affectedEntity": { "type": "string" },
+        "affectedRecordId": { "type": "string" },
+        "expectedDecision": { "type": "string" },
+        "actualDecision": { "type": "string" },
+        "isGroundTruth": { "type": "boolean" },
+        "status": { "type": "string", "enum": ["DETECTED", "BLOCKED", "RESOLVED", "IGNORED"] },
+        "timestamp": { "type": "string", "format": "date-time" }
+      },
+      "required": ["id", "type", "severity", "affectedRecordId", "expectedDecision", "actualDecision", "status", "timestamp"]
+    }
+  },
+  "firestore": {
+    "/companies/{companyId}": {
+      "schema": { "$ref": "#/entities/Company" },
+      "description": "Enterprise accounts and client companies."
+    },
+    "/contacts/{contactId}": {
+      "schema": { "$ref": "#/entities/Contact" },
+      "description": "Business contact persons linked to companies."
+    },
+    "/campaigns/{campaignId}": {
+      "schema": { "$ref": "#/entities/Campaign" },
+      "description": "Marketing campaigns generating inbound and outbound leads."
+    },
+    "/salesReps/{repId}": {
+      "schema": { "$ref": "#/entities/SalesRep" },
+      "description": "Internal sales representatives by territory and product line."
+    },
+    "/leads/{leadId}": {
+      "schema": { "$ref": "#/entities/Lead" },
+      "description": "Leads evaluated by company fit, intent, and engagement."
+    },
+    "/activities/{activityId}": {
+      "schema": { "$ref": "#/entities/Activity" },
+      "description": "Chronological lead touchpoints and web/email events."
+    },
+    "/consents/{consentId}": {
+      "schema": { "$ref": "#/entities/Consent" },
+      "description": "Regulatory consent events and audit logs."
+    },
+    "/scoreRules/{ruleId}": {
+      "schema": { "$ref": "#/entities/ScoreRule" },
+      "description": "Active and historical scoring rules."
+    },
+    "/tasks/{taskId}": {
+      "schema": { "$ref": "#/entities/Task" },
+      "description": "Follow-up tasks and SLA automation."
+    },
+    "/opportunities/{oppId}": {
+      "schema": { "$ref": "#/entities/Opportunity" },
+      "description": "Sales pipeline opportunities with stage progress."
+    },
+    "/stageHistories/{stageHistoryId}": {
+      "schema": { "$ref": "#/entities/StageHistory" },
+      "description": "Stage progression logs and duration records."
+    },
+    "/anomalies/{anomalyId}": {
+      "schema": { "$ref": "#/entities/Anomaly" },
+      "description": "System anomalies and security/integrity flags."
+    },
+    "/groundTruth/{groundTruthId}": {
+      "schema": { "$ref": "#/entities/Anomaly" },
+      "description": "Isolated ground-truth benchmark anomalies separated from training/scoring inputs."
+    }
+  }
+}

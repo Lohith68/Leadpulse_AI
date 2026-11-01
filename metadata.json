@@ -1,0 +1,6 @@
+{
+  "name": "LEADPULSE AI",
+  "description": "LEADPULSE AI – Intelligent Lead Scoring & Sales Automation Platform featuring rule-based scoring, territory routing, opportunity tracking, consent management, deduplication, and anomaly detection.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

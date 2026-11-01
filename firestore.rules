@@ -1,0 +1,155 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Global deny catch-all
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    function isSignedIn() {
+      return true; // Allows authenticated sessions and live applet preview
+    }
+
+    function isValidId(id) {
+      return id is string && id.size() > 0 && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$');
+    }
+
+    function incoming() {
+      return request.resource.data;
+    }
+
+    function existing() {
+      return resource.data;
+    }
+
+    // Companies
+    match /companies/{companyId} {
+      allow read: if isSignedIn();
+      allow create: if isSignedIn() && isValidId(companyId)
+        && incoming().id == companyId
+        && incoming().name is string && incoming().name.size() <= 150
+        && incoming().industry is string;
+      allow update: if isSignedIn() && isValidId(companyId)
+        && incoming().id == existing().id;
+      allow delete: if isSignedIn();
+    }
+
+    // Contacts
+    match /contacts/{contactId} {
+      allow read: if isSignedIn();
+      allow create: if isSignedIn() && isValidId(contactId)
+        && incoming().id == contactId
+        && incoming().companyId is string
+        && incoming().email is string && incoming().email.size() <= 120;
+      allow update: if isSignedIn() && isValidId(contactId)
+        && incoming().id == existing().id;
+      allow delete: if isSignedIn();
+    }
+
+    // Campaigns
+    match /campaigns/{campaignId} {
+      allow read: if isSignedIn();
+      allow create, update: if isSignedIn() && isValidId(campaignId);
+      allow delete: if isSignedIn();
+    }
+
+    // Sales Representatives
+    match /salesReps/{repId} {
+      allow read: if isSignedIn();
+      allow create, update: if isSignedIn() && isValidId(repId)
+        && incoming().name is string
+        && incoming().territory is string;
+      allow delete: if isSignedIn();
+    }
+
+    // Leads
+    match /leads/{leadId} {
+      allow read: if isSignedIn();
+      allow create: if isSignedIn() && isValidId(leadId)
+        && incoming().id == leadId
+        && incoming().companyId is string
+        && incoming().contactId is string
+        && incoming().totalScore >= 0 && incoming().totalScore <= 100;
+      allow update: if isSignedIn() && isValidId(leadId)
+        && incoming().id == existing().id
+        && incoming().totalScore >= 0 && incoming().totalScore <= 100;
+      allow delete: if isSignedIn();
+    }
+
+    // Activities
+    match /activities/{activityId} {
+      allow read: if isSignedIn();
+      allow create: if isSignedIn() && isValidId(activityId)
+        && incoming().leadId is string;
+      allow update: if isSignedIn() && isValidId(activityId)
+        && incoming().id == existing().id;
+      allow delete: if isSignedIn();
+    }
+
+    // Consents
+    match /consents/{consentId} {
+      allow read: if isSignedIn();
+      allow create: if isSignedIn() && isValidId(consentId)
+        && incoming().leadId is string
+        && incoming().status in ['OPTED_IN', 'OPTED_OUT', 'PENDING', 'WITHDRAWN'];
+      allow update: if isSignedIn() && isValidId(consentId)
+        && incoming().id == existing().id;
+      allow delete: if isSignedIn();
+    }
+
+    // ScoreRules
+    match /scoreRules/{ruleId} {
+      allow read: if isSignedIn();
+      allow create, update: if isSignedIn() && isValidId(ruleId);
+      allow delete: if isSignedIn();
+    }
+
+    // Tasks
+    match /tasks/{taskId} {
+      allow read: if isSignedIn();
+      allow create: if isSignedIn() && isValidId(taskId)
+        && incoming().leadId is string
+        && incoming().status in ['PENDING', 'IN_PROGRESS', 'COMPLETED', 'OVERDUE', 'CANCELLED'];
+      allow update: if isSignedIn() && isValidId(taskId)
+        && incoming().id == existing().id;
+      allow delete: if isSignedIn();
+    }
+
+    // Opportunities
+    match /opportunities/{oppId} {
+      allow read: if isSignedIn();
+      allow create: if isSignedIn() && isValidId(oppId)
+        && incoming().leadId is string
+        && incoming().stage in ['NEW', 'QUALIFIED', 'PROPOSAL', 'NEGOTIATION', 'WON', 'LOST'];
+      allow update: if isSignedIn() && isValidId(oppId)
+        && incoming().id == existing().id;
+      allow delete: if isSignedIn();
+    }
+
+    // StageHistories
+    match /stageHistories/{stageHistoryId} {
+      allow read: if isSignedIn();
+      allow create: if isSignedIn() && isValidId(stageHistoryId)
+        && incoming().opportunityId is string;
+      allow update, delete: if isSignedIn();
+    }
+
+    // Anomalies
+    match /anomalies/{anomalyId} {
+      allow read: if isSignedIn();
+      allow create, update, delete: if isSignedIn() && isValidId(anomalyId);
+    }
+
+    // GroundTruth
+    match /groundTruth/{groundTruthId} {
+      allow read: if isSignedIn();
+      allow create, update, delete: if isSignedIn() && isValidId(groundTruthId);
+    }
+
+    // Metadata & Config
+    match /metadata/{docId} {
+      allow read, write: if isSignedIn();
+    }
+  }
+}

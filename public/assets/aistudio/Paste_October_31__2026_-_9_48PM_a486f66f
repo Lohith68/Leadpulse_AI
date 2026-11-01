@@ -1,0 +1,1471 @@
+# MASTER DEVELOPMENT PROMPT
+# LEADPULSE AI – Intelligent Lead Scoring, Sales Automation & Opportunity Management Platform
+
+## 1. YOUR ROLE
+
+Act as a senior full-stack software architect, data engineer, database designer, AI/ML engineer, QA engineer and enterprise CRM developer.
+
+Your responsibility is to inspect, upgrade, complete, test and document the existing LEADPULSE AI application.
+
+Build a production-quality, end-to-end Lead Intelligence and Sales Automation Platform that satisfies every requirement described in this specification.
+
+IMPORTANT EXISTING PROJECT INSTRUCTIONS:
+
+The application already has:
+- React and TypeScript frontend.
+- Google AI Studio integration.
+- Firebase Cloud Firestore connectivity.
+- Dual-mode deterministic synthetic data generator.
+- Benchmark mode with 200 leads.
+- Full mode with 20,000 leads.
+- Fixed seed 20261022.
+- Firestore batch writing and retry mechanisms.
+- Pause, resume and cancel controls.
+- Independent Firestore server count verification.
+- CSV and JSON exports.
+- SQL DDL export.
+- Ground truth isolation.
+- A 12-point validation report.
+- Vitest test suites with 17 previously passing tests.
+
+Do not rebuild the application from scratch.
+
+Do not delete, rename or unnecessarily rewrite working modules.
+
+First inspect the existing project files, architecture, database collections, scoring engine, generator, validation functions and tests.
+
+Reuse working implementations and improve incomplete functionality.
+
+Do not use static mock values to simulate successful operations.
+
+Every displayed metric must come from actual application data or be clearly identified as a demonstration.
+
+---
+
+# 2. BUSINESS OBJECTIVE
+
+Build an intelligent system that:
+
+1. Generates and manages company and contact master data.
+2. Generates and manages potential customer leads.
+3. Scores leads based on company fit, purchase intent and engagement.
+4. Identifies duplicate records.
+5. Enforces communication consent.
+6. Routes leads according to territory and product specialization.
+7. Assigns appropriate sales representatives.
+8. Automatically creates follow-up tasks.
+9. Tracks opportunity progression.
+10. Records won and lost outcomes.
+11. Detects business and data-quality anomalies.
+12. Measures conversion and sales performance.
+13. Maintains complete auditability and historical traceability.
+
+The solution must expose key decisions, exceptions, explanations, historical changes and measurable business outcomes.
+
+---
+
+# 3. TECHNOLOGY ARCHITECTURE
+
+Maintain the existing technology stack where functional.
+
+Frontend:
+- React
+- TypeScript
+- Tailwind CSS
+- Responsive enterprise CRM interface
+- Recharts for visualizations
+
+Backend:
+- Existing secure server-side runtime.
+- Node.js or Python FastAPI for backend processing where appropriate.
+- Never expose private API keys in frontend code.
+
+Database:
+- Firebase Cloud Firestore.
+- Firebase Authentication.
+- Firestore Security Rules.
+
+AI:
+- Gemini API for optional lead explanations, summaries and analytical assistance.
+- Deterministic business rules must control scoring, consent, routing and validation.
+- AI-generated explanations must never override business rules.
+
+Testing:
+- Vitest.
+- Integration tests.
+- Data integrity tests.
+- Reproducibility tests.
+- Negative scenario tests.
+
+Export:
+- CSV.
+- JSON.
+- PostgreSQL-compatible SQL schema and seed data.
+
+---
+
+# 4. COMPLETE DATABASE DESIGN – ALL 11 CORE ENTITIES
+
+Implement the following entities with primary keys, foreign keys, field validation, lifecycle states and timestamps.
+
+ENTITY 1: COMPANY
+
+Primary key: company_id
+
+ID format:
+CO-000001
+
+Fields:
+- company_id
+- company_name
+- industry
+- company_size
+- annual_revenue
+- website_domain
+- country
+- state
+- city
+- territory
+- employee_count
+- created_at
+- updated_at
+- lifecycle_status
+
+ENTITY 2: CONTACT
+
+Primary key: contact_id
+
+ID format:
+CON-000001
+
+Foreign key:
+company_id
+
+Fields:
+- contact_id
+- company_id
+- first_name
+- last_name
+- email
+- normalized_email
+- phone
+- job_title
+- department
+- country
+- created_at
+- updated_at
+- lifecycle_status
+
+ENTITY 3: LEAD
+
+Primary key: lead_id
+
+ID format:
+LEAD-2026-000001
+
+Foreign keys:
+- company_id
+- contact_id
+- campaign_id
+- assigned_sales_rep_id
+
+Fields:
+- lead_id
+- company_id
+- contact_id
+- campaign_id
+- assigned_sales_rep_id
+- lead_source
+- product_interest
+- territory
+- created_at
+- last_activity_at
+- scoring_timestamp
+- lead_status
+- duplicate_group_id
+- is_duplicate
+- fit_score
+- intent_score
+- engagement_score
+- total_score
+- score_category
+- conversion_status
+- converted_at
+- lifecycle_status
+
+ENTITY 4: CAMPAIGN
+
+Primary key: campaign_id
+
+ID format:
+CAMP-000001
+
+Fields:
+- campaign_id
+- campaign_name
+- campaign_type
+- start_date
+- end_date
+- marketing_channel
+- budget
+- campaign_status
+- created_at
+
+ENTITY 5: ACTIVITY
+
+Primary key: activity_id
+
+ID format:
+ACT-<lead-id>-001
+
+Foreign key:
+lead_id
+
+Fields:
+- activity_id
+- lead_id
+- activity_type
+- activity_timestamp
+- activity_source
+- engagement_value
+- product_interest
+- event_description
+- created_at
+
+ENTITY 6: CONSENT
+
+Primary key: consent_id
+
+ID format:
+CONS-000001
+
+Foreign key:
+lead_id
+
+Fields:
+- consent_id
+- lead_id
+- consent_type
+- consent_status
+- consent_timestamp
+- effective_from
+- effective_until
+- source
+- withdrawal_timestamp
+- created_at
+
+Allowed statuses:
+OPTED_IN
+PENDING
+OPTED_OUT
+WITHDRAWN
+
+Maintain consent event history. Never overwrite historical consent events.
+
+ENTITY 7: SCORERULE
+
+Primary key: score_rule_id
+
+ID format:
+RULE-000001
+
+Fields:
+- score_rule_id
+- feature_name
+- feature_category
+- weight
+- maximum_points
+- effective_from
+- effective_until
+- rule_version
+- active_status
+- created_at
+
+ENTITY 8: SALESREP
+
+Primary key: sales_rep_id
+
+ID format:
+REP-000001
+
+Fields:
+- sales_rep_id
+- representative_name
+- email
+- territory
+- product_specialization
+- availability_status
+- workload_capacity
+- current_workload
+- active_status
+
+ENTITY 9: TASK
+
+Primary key: task_id
+
+ID format:
+TASK-<lead-id>-001
+
+Foreign keys:
+- lead_id
+- assigned_sales_rep_id
+
+Fields:
+- task_id
+- lead_id
+- assigned_sales_rep_id
+- task_type
+- priority
+- created_at
+- due_at
+- completed_at
+- task_status
+- idempotency_key
+
+Allowed task statuses:
+PENDING
+IN_PROGRESS
+COMPLETED
+OVERDUE
+CANCELLED
+
+ENTITY 10: OPPORTUNITY
+
+Primary key: opportunity_id
+
+ID format:
+OPP-2026-000001
+
+Foreign keys:
+- lead_id
+- company_id
+- sales_rep_id
+
+Fields:
+- opportunity_id
+- lead_id
+- company_id
+- sales_rep_id
+- opportunity_name
+- opportunity_value
+- currency
+- expected_close_date
+- actual_close_date
+- current_stage
+- won_lost_reason
+- outcome
+- created_at
+- updated_at
+
+ENTITY 11: STAGEHISTORY
+
+Primary key: stage_history_id
+
+ID format:
+HIST-000001
+
+Foreign key:
+opportunity_id
+
+Fields:
+- stage_history_id
+- opportunity_id
+- previous_stage
+- new_stage
+- transition_timestamp
+- transition_reason
+- changed_by
+- created_at
+
+---
+
+# 5. RELATIONSHIPS AND DATABASE INTEGRITY
+
+Document all relationships.
+
+Required relationships:
+
+- Company 1:N Contact.
+- Company 1:N Lead.
+- Contact 1:N Lead.
+- Campaign 1:N Lead.
+- Lead 1:N Activity.
+- Lead 1:N Consent.
+- Lead N:M Campaign where applicable through a LeadCampaign bridge collection.
+- Lead 1:N Task.
+- SalesRep 1:N Lead.
+- SalesRep 1:N Task.
+- Lead 1:0..1 active Opportunity.
+- Company 1:N Opportunity.
+- Opportunity 1:N StageHistory.
+- ScoreRule 1:N applicable scoring evaluations.
+
+Implement bridge collections for genuine many-to-many relationships.
+
+Implement explicit relationship validation because Firestore does not provide traditional relational foreign-key constraints.
+
+Validate every reference before committing related transactions.
+
+Never silently accept orphan records.
+
+Never overwrite event history.
+
+Use immutable IDs.
+
+Maintain audit timestamps.
+
+Document optional relationships and effective dates.
+
+---
+
+# 6. SYNTHETIC DATA GENERATION ENGINE
+
+Use the deterministic random seed:
+
+SEED = 20261022
+
+Support two modes.
+
+BENCHMARK MODE:
+- 50 companies.
+- 100 contacts.
+- 200 leads.
+- 60 opportunities.
+
+FULL MODE:
+- 5,000 companies.
+- 10,000 contacts.
+- 20,000 leads.
+- 3,000 opportunities.
+
+Additional expected full-mode volumes:
+- Approximately 40,000 activities.
+- Approximately 16,000 follow-up tasks.
+- Approximately 20,000 consent events.
+- Approximately 6,000 stage history records.
+
+Campaigns, score rules, representatives and bridge records must also be generated.
+
+Use Faker or equivalent synthetic data generation.
+
+Generate records in parent-before-child order.
+
+Generation sequence:
+
+1. Companies.
+2. Contacts.
+3. Campaigns.
+4. Sales representatives.
+5. Score rules.
+6. Leads.
+7. Activities.
+8. Consent records.
+9. Lead scores.
+10. Follow-up tasks.
+11. Opportunities.
+12. Stage history.
+13. Bridge records.
+14. Ground truth and anomaly fixtures.
+
+Use deterministic IDs and immutable counters.
+
+Ensure that the same seed, configuration, generator version and business rules produce identical business data.
+
+Generate valid baseline records first.
+
+Only afterward introduce deliberately labelled anomaly fixtures.
+
+Do not silently corrupt unrelated baseline records.
+
+Use a separate source manifest documenting that all data is synthetic.
+
+---
+
+# 7. REALISTIC DATA DISTRIBUTIONS
+
+Include meaningful variations.
+
+Generate:
+- Multiple industries.
+- Different company sizes.
+- Different territories.
+- Different lead sources.
+- Different product interests.
+- Different customer job roles.
+- Different campaign channels.
+- Different engagement levels.
+- Different lead creation dates.
+- Different consent states.
+- Different opportunity values.
+- Different sales outcomes.
+
+Include:
+- Duplicate lead clusters.
+- Opted-out leads.
+- Pending-consent leads.
+- Stale leads.
+- High-score non-converters.
+- Low-score converters where supported by documented outcome rules.
+- Hot, warm and cold leads.
+- Open, won and lost opportunities.
+
+Do not assign conversion outcomes independently at random.
+
+Generate outcome labels from documented deterministic rules based on eligible lead features, activity history, sales progression and historical outcome logic.
+
+Use a reproducible deterministic selection policy to produce the required 3,000 opportunities.
+
+Document how opportunity eligibility and conversion outcomes are calculated.
+
+Avoid unrealistic perfect correlation between score and conversion.
+
+Keep the data distribution realistic and explain all assumptions.
+
+---
+
+# 8. LEAD SCORING ENGINE
+
+Implement a transparent 100-point scoring engine.
+
+TOTAL SCORE = FIT + INTENT + ENGAGEMENT
+
+FIT SCORE: 30 POINTS
+
+- Company size: 10.
+- Industry match: 10.
+- Job role: 5.
+- Geographic fit: 5.
+
+INTENT SCORE: 40 POINTS
+
+- Pricing page visit: 10.
+- Demo request: 15.
+- Product enquiry: 10.
+- Purchase-related activity: 5.
+
+ENGAGEMENT SCORE: 30 POINTS
+
+- Email engagement: 10.
+- Website engagement: 10.
+- Event participation: 5.
+- Recent interaction: 5.
+
+Lead categories:
+
+80–100: HOT
+50–79: WARM
+0–49: COLD
+
+Requirements:
+
+- Explain every score.
+- Display feature-level point contributions.
+- Store scoring timestamp.
+- Store scoring rule version.
+- Preserve score history.
+- Make scoring reproducible.
+- Support effective-dated scoring rules.
+- Prevent scores exceeding 100.
+- Handle missing features correctly.
+- Exclude activities occurring after the scoring timestamp.
+- Never use post-conversion events in historical scoring.
+
+Create a score explanation for every scored lead.
+
+A score is a business-priority measure, not automatically a conversion probability.
+
+---
+
+# 9. DEDUPLICATION ENGINE
+
+Detect possible duplicate records using:
+
+- Normalized email.
+- Phone number.
+- Company name.
+- Contact name.
+- Website domain.
+
+Requirements:
+
+- Normalize input before comparison.
+- Create duplicate_group_id.
+- Preserve original records.
+- Record issue_type.
+- Record resolution_status.
+- Display matching evidence.
+- Support manual review.
+- Prevent duplicate opportunity creation.
+- Prevent duplicate tasks through idempotency keys.
+
+Do not delete records automatically.
+
+---
+
+# 10. CONSENT AND COMPLIANCE ENGINE
+
+Enforce consent before communication.
+
+Rules:
+
+OPTED_IN:
+Communication may proceed within the applicable permission scope.
+
+PENDING:
+Do not send marketing or sales outreach.
+
+OPTED_OUT:
+Block communication.
+
+WITHDRAWN:
+Block communication according to the effective withdrawal state.
+
+Requirements:
+
+- Check current effective consent before each communication.
+- Maintain consent history.
+- Record attempted communications.
+- Record blocked actions.
+- Log consent violations.
+- Prevent automated outreach to opted-out customers.
+- Do not let a high lead score override consent.
+- Make the consent decision auditable.
+
+An anomaly fixture may represent an attempted communication to an opted-out lead, but the production engine must block the actual send.
+
+---
+
+# 11. TERRITORY AND PRODUCT ROUTING ENGINE
+
+Assign leads using:
+
+- Geographic territory.
+- Product specialization.
+- Sales representative availability.
+- Current workload.
+- Workload capacity.
+- Active status.
+
+Requirements:
+
+- Create configurable routing rules.
+- Validate representative eligibility.
+- Prevent assignments outside authorized territories.
+- Prevent assignments to inactive representatives.
+- Prevent exceeding workload capacity.
+- Support reassignment.
+- Record routing decisions.
+- Record routing exceptions.
+- Preserve assignment history.
+
+If no eligible representative is available:
+
+Set assignment status to UNASSIGNED.
+
+Create an exception and require manual intervention.
+
+---
+
+# 12. FOLLOW-UP TASK AUTOMATION
+
+Automatically create tasks according to lead score.
+
+HOT:
+Follow up within one business day.
+
+WARM:
+Follow up within three business days.
+
+COLD:
+Add to an appropriate nurture workflow.
+
+Respect business calendars and time zones.
+
+Task fields must include:
+
+- Task ID.
+- Lead ID.
+- Assigned representative.
+- Priority.
+- Due date.
+- Status.
+- Created timestamp.
+- Completion timestamp.
+- Idempotency key.
+
+Prevent duplicate task creation.
+
+Track:
+
+PENDING
+IN_PROGRESS
+COMPLETED
+OVERDUE
+CANCELLED
+
+Provide task assignment, reassignment and completion functionality.
+
+Do not send external communications without consent verification and explicit authorized communication integration.
+
+---
+
+# 13. OPPORTUNITY MANAGEMENT
+
+Create opportunities from qualified leads using documented business rules.
+
+Opportunity stages:
+
+NEW
+QUALIFIED
+PROPOSAL
+NEGOTIATION
+WON
+LOST
+
+Requirements:
+
+- Track opportunity value.
+- Track expected close date.
+- Track actual close date.
+- Track assigned representative.
+- Track company and lead.
+- Require a won reason or documented closure details where applicable.
+- Require a lost reason when an opportunity is lost.
+- Prevent duplicate active opportunities.
+- Validate stage transitions.
+- Preserve every stage transition.
+- Never overwrite historical stage records.
+
+Create an immutable StageHistory event for every stage transition.
+
+Validate opportunity lifecycle continuity.
+
+---
+
+# 14. FIVE MANDATORY ANOMALY SCENARIOS
+
+Implement and individually test these five scenarios.
+
+SCENARIO 1:
+OPTED_OUT_LEAD_CONTACTED
+
+Expected decision:
+Block communication and log a consent violation.
+
+SCENARIO 2:
+POST_CONVERSION_ACTIVITY_USED_IN_SCORE
+
+Expected decision:
+Exclude future activity from historical scoring and flag temporal leakage.
+
+SCENARIO 3:
+LEAD_ASSIGNED_OUTSIDE_TERRITORY
+
+Expected decision:
+Block invalid assignment and reroute to an eligible representative.
+
+SCENARIO 4:
+DUPLICATE_OPPORTUNITY_CREATED
+
+Expected decision:
+Prevent duplicate creation and flag the duplicate opportunity attempt.
+
+SCENARIO 5:
+STAGE_HISTORY_GAP
+
+Expected decision:
+Identify invalid or missing stage transitions and flag the affected opportunity.
+
+For each anomaly, create:
+
+- issue_id.
+- issue_type.
+- affected_record_id.
+- detection_timestamp.
+- severity.
+- expected_decision.
+- actual_decision.
+- resolution_status.
+- ground_truth_label.
+
+Keep ground truth in a separate groundTruth collection and separate export files.
+
+Never use ground truth as a model input feature.
+
+Use isolated anomaly fixtures or clearly labelled test events so deliberate negative tests do not silently invalidate the valid baseline dataset.
+
+---
+
+# 15. AUDITABILITY AND TRACEABILITY
+
+Maintain explicit history for:
+
+- Lead status changes.
+- Lead assignment changes.
+- Score changes.
+- Consent changes.
+- Task status changes.
+- Opportunity stage transitions.
+- Duplicate resolution.
+- Anomaly detection.
+- Manual overrides.
+
+Every event must contain:
+
+- Unique event ID.
+- Entity ID.
+- Event type.
+- Previous value where relevant.
+- New value where relevant.
+- Timestamp.
+- Actor or system identity.
+- Reason.
+- Related rule version.
+
+Do not overwrite historical state changes.
+
+Provide a record-level audit timeline.
+
+---
+
+# 16. ANALYTICS DASHBOARD
+
+Create a fully functional executive CRM dashboard.
+
+Display actual persisted data.
+
+KPI cards:
+
+- Total leads.
+- Total companies.
+- Total contacts.
+- Hot leads.
+- Warm leads.
+- Cold leads.
+- Total opportunities.
+- Open opportunities.
+- Won opportunities.
+- Lost opportunities.
+- Pipeline value.
+- Conversion rate.
+- Lead-to-opportunity rate.
+- Win rate.
+- Average lead score.
+- Follow-up completion rate.
+- Overdue tasks.
+- Duplicate records.
+- Consent violations.
+- Anomaly count.
+
+Charts:
+
+1. Lead score distribution.
+2. Lead conversion funnel.
+3. Monthly lead generation.
+4. Monthly conversion trend.
+5. Opportunity stage distribution.
+6. Won versus lost opportunities.
+7. Territory performance.
+8. Campaign performance.
+9. Sales representative leaderboard.
+10. Product interest distribution.
+11. Task completion performance.
+12. Anomaly distribution.
+
+Filters:
+
+- Date range.
+- Territory.
+- Campaign.
+- Product.
+- Sales representative.
+- Lead category.
+- Opportunity stage.
+
+All dashboard metrics must be derived from actual stored records.
+
+Clearly identify metric definitions.
+
+---
+
+# 17. EVALUATION ENGINE
+
+Build a dedicated evaluation module.
+
+BUSINESS METRICS:
+
+Lead-to-opportunity rate:
+
+Opportunities / Eligible leads × 100
+
+Conversion rate:
+
+Converted leads / Eligible leads × 100
+
+Win rate:
+
+Won opportunities / Closed opportunities × 100
+
+Follow-up completion rate:
+
+Completed tasks / Eligible tasks × 100
+
+Pipeline value:
+
+Sum of eligible open opportunity values.
+
+Ensure denominators are clearly defined.
+
+MACHINE LEARNING METRICS:
+
+- Precision.
+- Recall.
+- F1-score.
+- ROC-AUC.
+- PR-AUC.
+- Confusion matrix.
+
+Requirements:
+
+- Create a leakage-safe training and test split.
+- Prefer chronological evaluation.
+- Keep future outcomes out of training features.
+- Exclude ground truth anomaly labels from predictive features.
+- Use only features available at prediction time.
+- Report class imbalance.
+- Handle undefined metrics safely.
+- Explain model limitations.
+- Compare rule-based scoring with predictive model performance.
+
+Do not fabricate model metrics.
+
+If a predictive model has not been trained, report NOT TRAINED rather than displaying invented results.
+
+---
+
+# 18. DATA VALIDATION ENGINE
+
+Implement comprehensive validation.
+
+REQUIRED CHECKS:
+
+1. Primary key uniqueness.
+2. Foreign key integrity.
+3. Allowed enum validation.
+4. Date ordering.
+5. Arithmetic reconciliation.
+6. Score range validation.
+7. Consent enforcement.
+8. Territory routing.
+9. Duplicate detection.
+10. Opportunity lifecycle validation.
+11. Stage history continuity.
+12. Ground truth isolation.
+13. Score reproducibility.
+14. Conversion funnel reconciliation.
+15. Opportunity count reconciliation.
+16. Task assignment validation.
+17. Idempotency validation.
+18. Required field validation.
+
+For each check, report:
+
+- Check name.
+- Description.
+- Records checked.
+- Passed records.
+- Failed records.
+- Warnings.
+- Execution timestamp.
+- PASS, FAIL or NOT TESTED status.
+
+Generate a downloadable validation report.
+
+Do not mark a check as passed without executing it.
+
+---
+
+# 19. FIRESTORE PERFORMANCE AND RELIABILITY
+
+Use the existing deterministic batch seeder.
+
+Requirements:
+
+- Use Firestore batch operations.
+- Keep each batch at or below 300 operations where appropriate.
+- Respect Firestore operation and quota limits.
+- Implement exponential backoff.
+- Implement safe retries.
+- Support pause, resume and cancel.
+- Support resumable generation.
+- Use deterministic document IDs.
+- Prevent duplicate document creation.
+- Use idempotent write operations.
+- Display actual batch progress.
+- Handle network interruption.
+- Handle partial failures.
+- Verify records after writes.
+- Avoid loading the entire dataset into frontend memory.
+
+Use getCountFromServer or equivalent independent server-side count verification.
+
+Compare expected counts against actual persisted counts.
+
+Display:
+
+- Expected count.
+- Actual count.
+- Difference.
+- Verification timestamp.
+- Verification status.
+
+Do not claim successful generation using in-memory counts alone.
+
+---
+
+# 20. DATA EXPORT AND DOCUMENTATION
+
+Provide complete exports.
+
+CSV:
+- companies.csv
+- contacts.csv
+- leads.csv
+- campaigns.csv
+- activities.csv
+- consent.csv
+- score_rules.csv
+- sales_reps.csv
+- tasks.csv
+- opportunities.csv
+- stage_history.csv
+- ground_truth.csv
+
+JSON:
+- Complete CRM export.
+- Individual entity exports.
+- Generator configuration.
+- Validation report.
+
+SQL:
+- Complete PostgreSQL-compatible schema.
+- Primary keys.
+- Foreign keys.
+- Unique constraints.
+- Check constraints.
+- Indexes.
+- Bridge tables.
+- SQL INSERT seed data.
+- Documented relationships.
+
+DOCUMENTATION:
+
+Create:
+
+1. README.md
+2. DATA_DICTIONARY.md
+3. ENTITY_RELATIONSHIPS.md
+4. DATABASE_SCHEMA.md
+5. SCORING_METHODOLOGY.md
+6. BUSINESS_RULES.md
+7. ANOMALY_CATALOG.md
+8. VALIDATION_REPORT.md
+9. REPRODUCIBILITY_REPORT.md
+10. SOURCE_MANIFEST.md
+11. TESTING_GUIDE.md
+12. DEPLOYMENT_GUIDE.md
+
+The data dictionary must describe every field, including:
+
+- Field name.
+- Data type.
+- Required or optional.
+- Allowed values.
+- Units.
+- Uniqueness.
+- Primary or foreign key status.
+- Validation rule.
+- Description.
+
+Source manifest must state that the data is synthetic.
+
+If external data is ever introduced, document URL, dataset version, retrieval date, license, attribution, transformations and discarded fields.
+
+Never use confidential customer data or unlawfully collected information.
+
+---
+
+# 21. REPRODUCIBILITY REQUIREMENTS
+
+Prove deterministic generation.
+
+Use:
+
+SEED = 20261022
+
+Generate the dataset twice using the same:
+
+- Seed.
+- Generator version.
+- Configuration.
+- Business rules.
+
+Compare:
+
+- Record counts.
+- Primary IDs.
+- Deterministic field values.
+- Entity-level checksums.
+- Export file checksums.
+
+Exclude nondeterministic operational timestamps, random system-generated audit metadata and other intentionally variable runtime fields from deterministic comparisons.
+
+Generate a reproducibility report.
+
+---
+
+# 22. APPLICATION UI REQUIREMENTS
+
+Maintain the existing LEADPULSE AI branding.
+
+Create or complete the following modules:
+
+1. Overview Dashboard.
+2. Leads Management.
+3. Companies.
+4. Contacts.
+5. Campaigns.
+6. Activities.
+7. Lead Scoring Engine.
+8. Sales Representatives.
+9. Follow-up Tasks.
+10. Opportunities.
+11. Stage History.
+12. Anomaly Detection.
+13. Consent Management.
+14. Analytics and Evaluation.
+15. Data Management.
+16. Validation Center.
+17. Audit Logs.
+18. Settings.
+
+Requirements:
+
+- Professional enterprise CRM appearance.
+- Responsive interface.
+- Sidebar navigation.
+- Search.
+- Pagination.
+- Sorting.
+- Filters.
+- Detail pages.
+- CRUD operations.
+- Loading states.
+- Error messages.
+- Confirmation dialogs.
+- Export buttons.
+- Real-time or refreshable data.
+- Accessible UI controls.
+
+Every visible button must perform its advertised operation.
+
+Do not create decorative controls that do nothing.
+
+---
+
+# 23. AUTHENTICATION AND ROLE-BASED ACCESS
+
+Implement Firebase Authentication and role-based authorization.
+
+Roles:
+
+ADMIN:
+Full access.
+
+SALES_MANAGER:
+Sales assignments, pipeline and team analytics.
+
+SALES_REPRESENTATIVE:
+Assigned leads, tasks and opportunities.
+
+MARKETING:
+Campaigns, consent-compliant marketing analytics and lead sources.
+
+ANALYST:
+Read-only analytics, evaluation and exports according to permissions.
+
+Implement Firestore Security Rules.
+
+Validate authorization on the server.
+
+Do not trust frontend role selection as authorization.
+
+---
+
+# 24. AUTOMATED TESTING
+
+Inspect the existing Vitest test suite.
+
+Preserve all passing tests.
+
+Expand the test suite to cover:
+
+DATA GENERATION:
+- Fixed-seed reproducibility.
+- Expected record counts.
+- Deterministic IDs.
+- Parent-before-child generation.
+
+DATABASE:
+- Primary key uniqueness.
+- Foreign key integrity.
+- Valid joins.
+- Required fields.
+- Enum validation.
+
+SCORING:
+- Fit score.
+- Intent score.
+- Engagement score.
+- Maximum score.
+- Boundary scores.
+- Missing values.
+- Historical scoring.
+- Temporal leakage prevention.
+
+CONSENT:
+- Opted-in communication.
+- Pending consent blocked.
+- Opted-out communication blocked.
+- Withdrawal enforcement.
+
+ROUTING:
+- Correct territory.
+- Correct product.
+- Inactive representative.
+- Capacity exceeded.
+- No eligible representative.
+
+TASKS:
+- Correct priority.
+- Correct deadlines.
+- Duplicate prevention.
+- Status transitions.
+
+OPPORTUNITIES:
+- Valid transitions.
+- Duplicate prevention.
+- Won/lost reasons.
+- Stage history.
+
+ANOMALIES:
+Test all five mandatory scenarios individually.
+
+EXPORT:
+- Correct CSV headers.
+- Valid JSON.
+- Valid SQL.
+- Ground truth separation.
+
+INTEGRATION:
+- Firestore write/read.
+- Batch retry.
+- Resume after interruption.
+- Independent count verification.
+
+Create an automated test report.
+
+Do not claim tests pass unless they have actually executed successfully.
+
+---
+
+# 25. REQUIRED FINAL ACCEPTANCE REPORT
+
+Before declaring the project complete, run a comprehensive acceptance audit.
+
+Verify:
+
+A. Business workflow:
+- Master data generated.
+- Leads generated.
+- Activities generated.
+- Scores calculated.
+- Deduplication executed.
+- Consent enforced.
+- Territory routing executed.
+- Tasks generated.
+- Opportunities created.
+- Stage history preserved.
+
+B. Dataset:
+- 5,000 companies.
+- 10,000 contacts.
+- 20,000 leads.
+- 3,000 opportunities.
+- Dependent collections populated.
+
+C. Required anomalies:
+- Opted-out lead contacted.
+- Post-conversion activity used in score.
+- Lead assigned outside territory.
+- Duplicate opportunity created.
+- Stage history gaps.
+
+D. Technical integrity:
+- Valid primary keys.
+- Valid foreign keys.
+- Correct lifecycle transitions.
+- Correct score calculation.
+- Correct consent decisions.
+- Correct routing.
+- Reproducible data.
+- Separate ground truth.
+
+E. Evaluation:
+- Business metrics calculated.
+- ML metrics evaluated where a model exists.
+- Held-out evaluation used.
+- No data leakage.
+
+F. Submission:
+- Source code.
+- README.
+- Data dictionary.
+- Database schema.
+- Generator.
+- CSV and JSON exports.
+- SQL DDL and seed data.
+- Ground truth.
+- Validation report.
+- Reproducibility report.
+- Automated tests.
+- Public GitHub repository.
+
+For every requirement use one of these statuses:
+
+PASS
+FAIL
+NOT TESTED
+NOT APPLICABLE
+
+Provide actual evidence, counts, test names and error details.
+
+Never fabricate a PASS status.
+
+---
+
+# 26. GITHUB PUBLICATION
+
+Prepare the complete project for a public GitHub repository.
+
+Repository name:
+
+leadpulse-ai-lead-intelligence
+
+Include:
+
+- Complete application source.
+- Backend.
+- Database schema.
+- Generator.
+- Tests.
+- Documentation.
+- Configuration examples.
+- README.
+- .gitignore.
+
+Do not commit:
+
+- API keys.
+- Firebase private credentials.
+- Service account JSON.
+- Personal data.
+- Environment secrets.
+- Sensitive production configuration.
+
+Create a complete README explaining:
+
+- Project overview.
+- Features.
+- Architecture.
+- Technology stack.
+- Prerequisites.
+- Installation.
+- Firebase configuration.
+- Environment variables.
+- Database setup.
+- Benchmark generation.
+- Full dataset generation.
+- Running tests.
+- Exporting data.
+- Deployment.
+- Troubleshooting.
+
+Prepare the repository for public publication and explain any GitHub authorization or publishing steps that require user approval.
+
+Do not claim a public repository exists until it has actually been created and verified.
+
+---
+
+# 27. FINAL DEVELOPMENT INSTRUCTIONS
+
+Work in a structured and reliable way.
+
+STEP 1:
+Inspect existing files and identify completed and incomplete modules.
+
+STEP 2:
+Prepare a requirement-to-implementation traceability matrix.
+
+STEP 3:
+Fix incomplete database relationships and data dictionary.
+
+STEP 4:
+Complete synthetic data generation.
+
+STEP 5:
+Complete scoring and historical score traceability.
+
+STEP 6:
+Complete deduplication, consent and routing.
+
+STEP 7:
+Complete task and opportunity automation.
+
+STEP 8:
+Complete anomaly detection.
+
+STEP 9:
+Complete dashboard and analytics.
+
+STEP 10:
+Complete validation, evaluation and reproducibility tests.
+
+STEP 11:
+Complete exports and documentation.
+
+STEP 12:
+Run all automated tests and final acceptance checks.
+
+STEP 13:
+Prepare public GitHub publication.
+
+Do not stop after generating the frontend.
+
+Do not replace real functionality with mock data.
+
+Do not skip difficult requirements.
+
+Do not silently ignore failed tests.
+
+If a requirement cannot be completed due to a technical limitation, clearly explain the limitation and provide a practical implementation alternative.
+
+Prioritize correctness, reproducibility, security, traceability and data integrity over visual appearance.
+
+FINAL OBJECTIVE:
+
+Deliver a complete, tested, documented and reproducible LEADPULSE AI platform that satisfies every requirement in the original business problem statement.
+
+Start by inspecting the existing project and producing a requirement-to-implementation gap analysis. Then implement all remaining requirements without breaking the existing application.
+
+Do not ask me to repeat information already present in the existing project.

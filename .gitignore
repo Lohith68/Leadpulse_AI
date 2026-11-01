@@ -1,0 +1,35 @@
+# Dependencies
+node_modules/
+.pnp
+.pnp.js
+
+# Build artifacts
+dist/
+build/
+coverage/
+
+# Environment and secrets
+.env*
+!.env.example
+*.local
+
+# Firebase and Service Account private keys
+serviceAccount*.json
+service-account*.json
+firebase-admin-*.json
+*.pem
+*.key
+
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# System and Editor files
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
