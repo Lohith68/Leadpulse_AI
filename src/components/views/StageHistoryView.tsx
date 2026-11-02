@@ -32,36 +32,36 @@ export const StageHistoryView: React.FC = () => {
   }, [stageHistories]);
 
   return (
-    <div className="space-y-5">
+    <div className="space-y-6">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-white p-5 rounded-xl border border-slate-200 shadow-xs">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-white dark:bg-[#111C2E] p-6 rounded-2xl border border-[#E2E8F0] dark:border-[#263449] shadow-xs">
         <div>
-          <div className="flex items-center gap-2">
-            <h1 className="text-xl sm:text-2xl font-black text-slate-900 tracking-tight">
+          <div className="flex items-center gap-3">
+            <h1 className="text-xl sm:text-2xl font-bold text-[#0F172A] dark:text-[#F8FAFC] tracking-tight">
               Opportunity Stage History Audit Log
             </h1>
-            <Badge variant="purple" size="md">
+            <Badge variant="teal" size="md">
               {stageHistories.length} Transition Logs
             </Badge>
           </div>
-          <p className="text-xs text-slate-500 mt-0.5">
-            Immutable transition audit records verifying pipeline movement, stage cycle velocity, and authorization
+          <p className="text-xs text-[#64748B] dark:text-[#94A3B8] mt-1 font-normal">
+            Immutable transition audit records verifying pipeline progression, stage cycle velocity, and authorization.
           </p>
         </div>
       </div>
 
       {/* Cycle Time Velocity Cards */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-3.5">
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
         {avgDurations.map(stat => (
-          <div key={stat.stage} className="bg-white p-4 rounded-xl border border-slate-200 shadow-xs">
-            <div className="flex items-center justify-between text-slate-400 text-xs font-semibold">
+          <div key={stat.stage} className="bg-white dark:bg-[#111C2E] p-5 rounded-2xl border border-[#E2E8F0] dark:border-[#263449] shadow-xs">
+            <div className="flex items-center justify-between text-[#64748B] dark:text-[#94A3B8] text-xs font-semibold">
               <span>{stat.stage} Velocity</span>
-              <Clock className="w-3.5 h-3.5" />
+              <Clock className="w-3.5 h-3.5 text-[#2563EB]" />
             </div>
-            <div className="mt-2 text-2xl font-black text-slate-900 font-mono">
-              {stat.avgDays} <span className="text-xs font-normal text-slate-400">days avg</span>
+            <div className="mt-2 text-2xl font-bold text-[#0F172A] dark:text-[#F8FAFC] font-mono tabular-nums">
+              {stat.avgDays} <span className="text-xs font-normal text-[#64748B] dark:text-[#94A3B8]">days avg</span>
             </div>
-            <div className="text-[11px] text-slate-400 mt-0.5">
+            <div className="text-[11px] text-[#64748B] dark:text-[#94A3B8] mt-1">
               Across {stat.count} transition events
             </div>
           </div>
@@ -69,11 +69,11 @@ export const StageHistoryView: React.FC = () => {
       </div>
 
       {/* Audit Log Table */}
-      <div className="bg-white rounded-xl border border-slate-200 shadow-xs overflow-hidden">
+      <div className="bg-white dark:bg-[#111C2E] rounded-2xl border border-[#E2E8F0] dark:border-[#263449] shadow-xs overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full text-left border-collapse text-xs">
             <thead>
-              <tr className="bg-slate-50 border-b border-slate-200 text-[11px] font-bold text-slate-500 uppercase tracking-wider">
+              <tr className="bg-[#F8FAFC] dark:bg-[#0B1220] border-b border-[#E2E8F0] dark:border-[#263449] text-[11px] font-bold text-[#64748B] dark:text-[#94A3B8] uppercase tracking-wider">
                 <th className="py-3 px-4">Audit ID</th>
                 <th className="py-3 px-4">Opportunity</th>
                 <th className="py-3 px-4">Stage Transition</th>
@@ -83,31 +83,31 @@ export const StageHistoryView: React.FC = () => {
                 <th className="py-3 px-4 text-right">Event Timestamp</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-slate-100">
+            <tbody className="divide-y divide-[#E2E8F0]/70 dark:divide-[#263449]/70 text-[#0F172A] dark:text-[#F8FAFC]">
               {stageHistories.map(history => {
                 const opp = oppsMap.get(history.opportunityId);
                 return (
-                  <tr key={history.id} className="hover:bg-slate-50/70 transition-colors">
-                    <td className="py-3 px-4 font-mono font-bold text-slate-700">{history.id}</td>
-                    <td className="py-3 px-4">
-                      <div className="font-bold text-slate-900">{opp?.name || history.opportunityId}</div>
-                      <span className="font-mono text-[10px] text-purple-700">{history.opportunityId}</span>
+                  <tr key={history.id} className="hover:bg-[#F8FAFC]/70 dark:hover:bg-[#1E293B]/40 transition-colors">
+                    <td className="py-3.5 px-4 font-mono font-bold">{history.id}</td>
+                    <td className="py-3.5 px-4">
+                      <div className="font-semibold">{opp?.name || history.opportunityId}</div>
+                      <span className="font-mono text-[10px] text-[#2563EB] dark:text-[#3B82F6]">{history.opportunityId}</span>
                     </td>
-                    <td className="py-3 px-4">
-                      <div className="flex items-center gap-1.5 font-bold">
-                        <span className="text-slate-500">{history.fromStage}</span>
-                        <ArrowRight className="w-3 h-3 text-slate-400" />
-                        <span className="text-purple-700">{history.toStage}</span>
+                    <td className="py-3.5 px-4">
+                      <div className="flex items-center gap-1.5 font-semibold">
+                        <span className="text-[#64748B] dark:text-[#94A3B8]">{history.fromStage}</span>
+                        <ArrowRight className="w-3 h-3 text-[#64748B] dark:text-[#94A3B8]" />
+                        <span className="text-[#2563EB] dark:text-[#3B82F6]">{history.toStage}</span>
                       </div>
                     </td>
-                    <td className="py-3 px-4 font-mono font-semibold text-slate-700">
+                    <td className="py-3.5 px-4 font-mono font-semibold tabular-nums">
                       {history.durationDays} days
                     </td>
-                    <td className="py-3 px-4 text-slate-600 max-w-xs truncate">
+                    <td className="py-3.5 px-4 text-[#64748B] dark:text-[#94A3B8] max-w-xs truncate">
                       {history.transitionReason || 'Standard stage advancement.'}
                     </td>
-                    <td className="py-3 px-4 text-slate-700 font-medium">{history.changedBy}</td>
-                    <td className="py-3 px-4 text-right text-slate-500 font-mono text-[11px]">
+                    <td className="py-3.5 px-4 font-medium">{history.changedBy}</td>
+                    <td className="py-3.5 px-4 text-right text-[#64748B] dark:text-[#94A3B8] font-mono text-[11px] tabular-nums">
                       {new Date(history.timestamp).toLocaleString()}
                     </td>
                   </tr>

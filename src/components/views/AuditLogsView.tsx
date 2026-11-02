@@ -144,7 +144,7 @@ export const AuditLogsView: React.FC = () => {
   const getCategoryIcon = (category: UnifiedAuditEntry['category']) => {
     switch (category) {
       case 'STAGE_TRANSITION':
-        return <GitCommit className="w-3.5 h-3.5 text-blue-500" />;
+        return <GitCommit className="w-3.5 h-3.5 text-[#2563EB]" />;
       case 'CONSENT_DECISION':
         return <ShieldCheck className="w-3.5 h-3.5 text-emerald-500" />;
       case 'ANOMALY_FLAG':
@@ -153,7 +153,7 @@ export const AuditLogsView: React.FC = () => {
         return <CheckSquare className="w-3.5 h-3.5 text-amber-500" />;
       case 'SCORE_EVENT':
       default:
-        return <Layers className="w-3.5 h-3.5 text-purple-500" />;
+        return <Layers className="w-3.5 h-3.5 text-[#14B8A6]" />;
     }
   };
 
@@ -172,13 +172,13 @@ export const AuditLogsView: React.FC = () => {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-white dark:bg-[#111C2E] p-6 rounded-2xl border border-[#E2E8F0] dark:border-[#263449] shadow-xs">
         <div>
-          <div className="flex items-center gap-2">
-            <h1 className="text-2xl font-black text-slate-900 tracking-tight">System Audit &amp; Event Logs</h1>
-            <Badge variant="purple">Immutable Ledger</Badge>
+          <div className="flex items-center gap-3">
+            <h1 className="text-xl sm:text-2xl font-bold text-[#0F172A] dark:text-[#F8FAFC] tracking-tight">System Audit &amp; Event Logs</h1>
+            <Badge variant="teal">Immutable Ledger</Badge>
           </div>
-          <p className="text-xs text-slate-500 mt-1">
+          <p className="text-xs text-[#64748B] dark:text-[#94A3B8] mt-1 font-normal">
             Chronological, cryptographically traceable event log recording consent decisions, stage shifts, anomaly flags, and pipeline automation.
           </p>
         </div>
@@ -186,64 +186,64 @@ export const AuditLogsView: React.FC = () => {
         <div className="flex items-center gap-2">
           <button
             onClick={handleExportCSV}
-            className="px-3.5 py-2 rounded-lg bg-white border border-slate-200 text-slate-700 hover:bg-slate-50 text-xs font-semibold shadow-sm flex items-center gap-2 cursor-pointer"
+            className="px-4 py-2.5 rounded-xl bg-[#F8FAFC] dark:bg-[#0B1220] border border-[#E2E8F0] dark:border-[#263449] text-[#0F172A] dark:text-[#F8FAFC] hover:bg-slate-100 dark:hover:bg-slate-800 text-xs font-semibold shadow-xs flex items-center gap-2 cursor-pointer transition-colors"
           >
-            <Download className="w-3.5 h-3.5" />
+            <Download className="w-3.5 h-3.5 text-[#2563EB]" />
             Export Audit Log (CSV)
           </button>
         </div>
       </div>
 
       {/* KPI Counters */}
-      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-        <div className="bg-white border border-slate-200 rounded-xl p-4 shadow-sm">
-          <div className="text-[11px] font-bold text-slate-400 uppercase tracking-wider">Total Audit Events</div>
-          <div className="text-2xl font-black text-slate-900 mt-1">{auditEntries.length.toLocaleString()}</div>
-          <div className="text-[10px] text-slate-400 mt-1">Aggregate event trace</div>
+      <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+        <div className="bg-white dark:bg-[#111C2E] border border-[#E2E8F0] dark:border-[#263449] rounded-2xl p-5 shadow-xs">
+          <div className="text-xs font-semibold text-[#64748B] dark:text-[#94A3B8]">Total Audit Events</div>
+          <div className="text-2xl font-bold text-[#0F172A] dark:text-[#F8FAFC] mt-1 tabular-nums">{auditEntries.length.toLocaleString()}</div>
+          <div className="text-[11px] text-[#2563EB] dark:text-[#3B82F6] font-medium mt-1">Aggregate Event Trace</div>
         </div>
 
-        <div className="bg-white border border-slate-200 rounded-xl p-4 shadow-sm">
-          <div className="text-[11px] font-bold text-blue-600 uppercase tracking-wider">Stage Transitions</div>
-          <div className="text-2xl font-black text-blue-700 mt-1">{stageHistories.length.toLocaleString()}</div>
-          <div className="text-[10px] text-slate-400 mt-1">Opportunity milestones</div>
+        <div className="bg-white dark:bg-[#111C2E] border border-[#E2E8F0] dark:border-[#263449] rounded-2xl p-5 shadow-xs">
+          <div className="text-xs font-semibold text-[#64748B] dark:text-[#94A3B8]">Stage Transitions</div>
+          <div className="text-2xl font-bold text-[#2563EB] dark:text-[#3B82F6] mt-1 tabular-nums">{stageHistories.length.toLocaleString()}</div>
+          <div className="text-[11px] text-[#2563EB] dark:text-[#3B82F6] font-medium mt-1">Opportunity Milestones</div>
         </div>
 
-        <div className="bg-white border border-slate-200 rounded-xl p-4 shadow-sm">
-          <div className="text-[11px] font-bold text-emerald-600 uppercase tracking-wider">Privacy &amp; Consents</div>
-          <div className="text-2xl font-black text-emerald-700 mt-1">{consents.length.toLocaleString()}</div>
-          <div className="text-[10px] text-slate-400 mt-1">Compliance ledger records</div>
+        <div className="bg-white dark:bg-[#111C2E] border border-[#E2E8F0] dark:border-[#263449] rounded-2xl p-5 shadow-xs">
+          <div className="text-xs font-semibold text-[#64748B] dark:text-[#94A3B8]">Privacy &amp; Consents</div>
+          <div className="text-2xl font-bold text-emerald-600 dark:text-emerald-400 mt-1 tabular-nums">{consents.length.toLocaleString()}</div>
+          <div className="text-[11px] text-emerald-600 dark:text-emerald-400 font-medium mt-1">Compliance Ledger Records</div>
         </div>
 
-        <div className="bg-white border border-slate-200 rounded-xl p-4 shadow-sm">
-          <div className="text-[11px] font-bold text-rose-600 uppercase tracking-wider">Anomaly Detections</div>
-          <div className="text-2xl font-black text-rose-700 mt-1">{anomalies.length.toLocaleString()}</div>
-          <div className="text-[10px] text-slate-400 mt-1">Sentinel audit triggers</div>
+        <div className="bg-white dark:bg-[#111C2E] border border-[#E2E8F0] dark:border-[#263449] rounded-2xl p-5 shadow-xs">
+          <div className="text-xs font-semibold text-[#64748B] dark:text-[#94A3B8]">Anomaly Detections</div>
+          <div className="text-2xl font-bold text-rose-600 dark:text-rose-400 mt-1 tabular-nums">{anomalies.length.toLocaleString()}</div>
+          <div className="text-[11px] text-[#64748B] dark:text-[#94A3B8] font-medium mt-1">Sentinel Audit Triggers</div>
         </div>
       </div>
 
       {/* Filter and Search Bar */}
-      <div className="bg-white border border-slate-200 rounded-xl p-4 shadow-sm space-y-3">
+      <div className="bg-white dark:bg-[#111C2E] border border-[#E2E8F0] dark:border-[#263449] rounded-2xl p-4 shadow-xs space-y-4">
         <div className="flex flex-col md:flex-row gap-3">
           <div className="flex-1 relative">
-            <Search className="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" />
+            <Search className="w-4 h-4 text-[#64748B] dark:text-[#94A3B8] absolute left-3.5 top-1/2 -translate-y-1/2" />
             <input
               type="text"
               placeholder="Search by event ID, entity ID, action, or actor..."
               value={searchTerm}
               onChange={e => setSearchTerm(e.target.value)}
-              className="w-full pl-9 pr-4 py-2 border border-slate-200 rounded-lg text-xs focus:outline-none focus:ring-2 focus:ring-purple-500/20 focus:border-purple-500"
+              className="w-full pl-9 pr-4 py-2 border border-[#E2E8F0] dark:border-[#263449] bg-[#F8FAFC] dark:bg-[#0B1220] text-[#0F172A] dark:text-[#F8FAFC] placeholder-[#64748B] dark:placeholder-[#94A3B8] rounded-xl text-xs focus:outline-none focus:border-[#2563EB]"
             />
           </div>
 
           <div className="flex flex-wrap items-center gap-2">
-            <div className="flex items-center gap-1.5 text-xs text-slate-500">
+            <div className="flex items-center gap-1.5 text-xs text-[#64748B] dark:text-[#94A3B8]">
               <Filter className="w-3.5 h-3.5" />
               <span>Category:</span>
             </div>
             <select
               value={categoryFilter}
               onChange={e => setCategoryFilter(e.target.value)}
-              className="border border-slate-200 rounded-lg px-2.5 py-1.5 text-xs font-medium text-slate-700 bg-white"
+              className="border border-[#E2E8F0] dark:border-[#263449] rounded-xl px-3 py-2 text-xs font-medium text-[#0F172A] dark:text-[#F8FAFC] bg-[#F8FAFC] dark:bg-[#0B1220] focus:outline-none focus:border-[#2563EB]"
             >
               <option value="ALL">All Event Types</option>
               <option value="STAGE_TRANSITION">Stage Transitions</option>
@@ -253,13 +253,13 @@ export const AuditLogsView: React.FC = () => {
               <option value="SCORE_EVENT">Score Recalculations</option>
             </select>
 
-            <div className="flex items-center gap-1.5 text-xs text-slate-500 ml-2">
+            <div className="flex items-center gap-1.5 text-xs text-[#64748B] dark:text-[#94A3B8] ml-2">
               <span>Severity:</span>
             </div>
             <select
               value={severityFilter}
               onChange={e => setSeverityFilter(e.target.value)}
-              className="border border-slate-200 rounded-lg px-2.5 py-1.5 text-xs font-medium text-slate-700 bg-white"
+              className="border border-[#E2E8F0] dark:border-[#263449] rounded-xl px-3 py-2 text-xs font-medium text-[#0F172A] dark:text-[#F8FAFC] bg-[#F8FAFC] dark:bg-[#0B1220] focus:outline-none focus:border-[#2563EB]"
             >
               <option value="ALL">All Severities</option>
               <option value="INFO">Info</option>
@@ -270,51 +270,51 @@ export const AuditLogsView: React.FC = () => {
         </div>
 
         {/* Audit Log Table */}
-        <div className="overflow-x-auto border border-slate-200 rounded-lg">
-          <table className="w-full text-left text-xs text-slate-600">
-            <thead className="bg-slate-50 text-[11px] font-bold text-slate-500 uppercase border-b border-slate-200">
+        <div className="overflow-x-auto border border-[#E2E8F0] dark:border-[#263449] rounded-xl">
+          <table className="w-full text-left text-xs text-[#0F172A] dark:text-[#F8FAFC]">
+            <thead className="bg-[#F8FAFC] dark:bg-[#0B1220] text-[11px] font-bold text-[#64748B] dark:text-[#94A3B8] uppercase border-b border-[#E2E8F0] dark:border-[#263449]">
               <tr>
-                <th className="px-4 py-2.5">Audit ID</th>
-                <th className="px-4 py-2.5">Timestamp</th>
-                <th className="px-4 py-2.5">Category</th>
-                <th className="px-4 py-2.5">Entity Reference</th>
-                <th className="px-4 py-2.5">Actor</th>
-                <th className="px-4 py-2.5">Action &amp; Narrative</th>
-                <th className="px-4 py-2.5">Severity</th>
-                <th className="px-4 py-2.5 text-right">View</th>
+                <th className="px-4 py-3">Audit ID</th>
+                <th className="px-4 py-3">Timestamp</th>
+                <th className="px-4 py-3">Category</th>
+                <th className="px-4 py-3">Entity Reference</th>
+                <th className="px-4 py-3">Actor</th>
+                <th className="px-4 py-3">Action &amp; Narrative</th>
+                <th className="px-4 py-3">Severity</th>
+                <th className="px-4 py-3 text-right">View</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-slate-100">
+            <tbody className="divide-y divide-[#E2E8F0]/70 dark:divide-[#263449]/70">
               {filteredEntries.length === 0 ? (
                 <tr>
-                  <td colSpan={8} className="text-center py-8 text-slate-400">
+                  <td colSpan={8} className="text-center py-8 text-[#64748B] dark:text-[#94A3B8]">
                     No audit records matching your search filter.
                   </td>
                 </tr>
               ) : (
                 filteredEntries.slice(0, 50).map(entry => (
-                  <tr key={entry.id} className="hover:bg-slate-50/80 transition-colors">
-                    <td className="px-4 py-3 font-mono font-medium text-slate-900">{entry.id}</td>
-                    <td className="px-4 py-3 text-slate-500 text-[11px] whitespace-nowrap">
+                  <tr key={entry.id} className="hover:bg-[#F8FAFC]/70 dark:hover:bg-[#1E293B]/40 transition-colors">
+                    <td className="px-4 py-3.5 font-mono font-medium">{entry.id}</td>
+                    <td className="px-4 py-3.5 text-[#64748B] dark:text-[#94A3B8] text-[11px] whitespace-nowrap tabular-nums">
                       {new Date(entry.timestamp).toLocaleString()}
                     </td>
-                    <td className="px-4 py-3">
-                      <div className="flex items-center gap-1.5 font-medium text-slate-700">
+                    <td className="px-4 py-3.5">
+                      <div className="flex items-center gap-1.5 font-medium">
                         {getCategoryIcon(entry.category)}
                         <span className="text-[11px]">{entry.category.replace('_', ' ')}</span>
                       </div>
                     </td>
-                    <td className="px-4 py-3 font-mono text-purple-700 font-semibold">{entry.entityId}</td>
-                    <td className="px-4 py-3 text-slate-700 text-[11px]">{entry.actor}</td>
-                    <td className="px-4 py-3">
-                      <div className="font-semibold text-slate-800">{entry.action}</div>
-                      <div className="text-[11px] text-slate-500 truncate max-w-xs">{entry.details}</div>
+                    <td className="px-4 py-3.5 font-mono text-[#2563EB] dark:text-[#3B82F6] font-semibold">{entry.entityId}</td>
+                    <td className="px-4 py-3.5 text-[#64748B] dark:text-[#94A3B8] text-[11px]">{entry.actor}</td>
+                    <td className="px-4 py-3.5">
+                      <div className="font-semibold">{entry.action}</div>
+                      <div className="text-[11px] text-[#64748B] dark:text-[#94A3B8] truncate max-w-xs">{entry.details}</div>
                     </td>
-                    <td className="px-4 py-3">{getSeverityBadge(entry.severity)}</td>
-                    <td className="px-4 py-3 text-right">
+                    <td className="px-4 py-3.5">{getSeverityBadge(entry.severity)}</td>
+                    <td className="px-4 py-3.5 text-right">
                       <button
                         onClick={() => setSelectedEntry(entry)}
-                        className="p-1 rounded hover:bg-slate-100 text-slate-500 hover:text-slate-800 transition-colors cursor-pointer"
+                        className="p-1.5 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 text-[#64748B] dark:text-[#94A3B8] hover:text-[#0F172A] dark:hover:text-white transition-colors cursor-pointer"
                         title="Inspect Event"
                       >
                         <Eye className="w-4 h-4" />
@@ -328,7 +328,7 @@ export const AuditLogsView: React.FC = () => {
         </div>
 
         {filteredEntries.length > 50 && (
-          <div className="text-center text-xs text-slate-400 py-2">
+          <div className="text-center text-xs text-[#64748B] dark:text-[#94A3B8] py-2">
             Showing first 50 of {filteredEntries.length.toLocaleString()} matching records.
           </div>
         )}
@@ -336,61 +336,61 @@ export const AuditLogsView: React.FC = () => {
 
       {/* Audit Detail Modal */}
       {selectedEntry && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/50 backdrop-blur-xs p-4">
-          <div className="bg-white rounded-2xl p-6 max-w-lg w-full shadow-2xl border border-slate-200 space-y-4">
-            <div className="flex justify-between items-center border-b border-slate-100 pb-3">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/60 backdrop-blur-xs p-4">
+          <div className="bg-white dark:bg-[#111C2E] rounded-2xl p-6 max-w-lg w-full shadow-2xl border border-[#E2E8F0] dark:border-[#263449] space-y-4">
+            <div className="flex justify-between items-center border-b border-[#E2E8F0] dark:border-[#263449] pb-3">
               <div className="flex items-center gap-2">
-                <FileText className="w-5 h-5 text-purple-600" />
-                <h3 className="text-sm font-bold text-slate-900">Audit Record Inspector</h3>
+                <FileText className="w-5 h-5 text-[#2563EB]" />
+                <h3 className="text-sm font-bold text-[#0F172A] dark:text-[#F8FAFC]">Audit Record Inspector</h3>
               </div>
               <button
                 onClick={() => setSelectedEntry(null)}
-                className="text-slate-400 hover:text-slate-600 font-bold text-sm cursor-pointer"
+                className="text-[#64748B] dark:text-[#94A3B8] hover:text-[#0F172A] dark:hover:text-white font-bold text-sm cursor-pointer"
               >
                 ✕
               </button>
             </div>
 
-            <div className="space-y-2.5 text-xs text-slate-700">
-              <div className="flex justify-between p-2.5 bg-slate-50 rounded-lg">
-                <span className="font-semibold text-slate-500">Record ID</span>
-                <span className="font-mono font-bold text-slate-900">{selectedEntry.id}</span>
+            <div className="space-y-2.5 text-xs text-[#0F172A] dark:text-[#F8FAFC]">
+              <div className="flex justify-between p-3 bg-[#F8FAFC] dark:bg-[#0B1220] rounded-xl border border-[#E2E8F0] dark:border-[#263449]">
+                <span className="font-semibold text-[#64748B] dark:text-[#94A3B8]">Record ID</span>
+                <span className="font-mono font-bold">{selectedEntry.id}</span>
               </div>
 
-              <div className="flex justify-between p-2.5 bg-slate-50 rounded-lg">
-                <span className="font-semibold text-slate-500">Timestamp</span>
-                <span className="font-mono text-slate-800">{new Date(selectedEntry.timestamp).toISOString()}</span>
+              <div className="flex justify-between p-3 bg-[#F8FAFC] dark:bg-[#0B1220] rounded-xl border border-[#E2E8F0] dark:border-[#263449]">
+                <span className="font-semibold text-[#64748B] dark:text-[#94A3B8]">Timestamp</span>
+                <span className="font-mono text-[#64748B] dark:text-[#94A3B8] tabular-nums">{new Date(selectedEntry.timestamp).toISOString()}</span>
               </div>
 
-              <div className="flex justify-between p-2.5 bg-slate-50 rounded-lg">
-                <span className="font-semibold text-slate-500">Category &amp; Severity</span>
+              <div className="flex justify-between p-3 bg-[#F8FAFC] dark:bg-[#0B1220] rounded-xl border border-[#E2E8F0] dark:border-[#263449]">
+                <span className="font-semibold text-[#64748B] dark:text-[#94A3B8]">Category &amp; Severity</span>
                 <div className="flex items-center gap-2">
-                  <span className="font-medium text-slate-700">{selectedEntry.category}</span>
+                  <span className="font-medium">{selectedEntry.category}</span>
                   {getSeverityBadge(selectedEntry.severity)}
                 </div>
               </div>
 
-              <div className="flex justify-between p-2.5 bg-slate-50 rounded-lg">
-                <span className="font-semibold text-slate-500">Entity Reference</span>
-                <span className="font-mono font-bold text-purple-700">{selectedEntry.entityId}</span>
+              <div className="flex justify-between p-3 bg-[#F8FAFC] dark:bg-[#0B1220] rounded-xl border border-[#E2E8F0] dark:border-[#263449]">
+                <span className="font-semibold text-[#64748B] dark:text-[#94A3B8]">Entity Reference</span>
+                <span className="font-mono font-bold text-[#2563EB] dark:text-[#3B82F6]">{selectedEntry.entityId}</span>
               </div>
 
-              <div className="flex justify-between p-2.5 bg-slate-50 rounded-lg">
-                <span className="font-semibold text-slate-500">Originating Actor</span>
-                <span className="font-medium text-slate-900">{selectedEntry.actor}</span>
+              <div className="flex justify-between p-3 bg-[#F8FAFC] dark:bg-[#0B1220] rounded-xl border border-[#E2E8F0] dark:border-[#263449]">
+                <span className="font-semibold text-[#64748B] dark:text-[#94A3B8]">Originating Actor</span>
+                <span className="font-medium">{selectedEntry.actor}</span>
               </div>
 
-              <div className="p-3 bg-slate-50 rounded-lg space-y-1">
-                <div className="font-semibold text-slate-500">Action Narrative</div>
-                <div className="font-medium text-slate-900">{selectedEntry.action}</div>
-                <div className="text-[11px] text-slate-600 mt-1 leading-relaxed">{selectedEntry.details}</div>
+              <div className="p-3 bg-[#F8FAFC] dark:bg-[#0B1220] rounded-xl border border-[#E2E8F0] dark:border-[#263449] space-y-1">
+                <div className="font-semibold text-[#64748B] dark:text-[#94A3B8]">Action Narrative</div>
+                <div className="font-medium">{selectedEntry.action}</div>
+                <div className="text-[11px] text-[#64748B] dark:text-[#94A3B8] mt-1 leading-relaxed">{selectedEntry.details}</div>
               </div>
             </div>
 
-            <div className="flex justify-end pt-3 border-t border-slate-100">
+            <div className="flex justify-end pt-3 border-t border-[#E2E8F0] dark:border-[#263449]">
               <button
                 onClick={() => setSelectedEntry(null)}
-                className="px-4 py-2 rounded-lg bg-slate-900 text-white text-xs font-bold hover:bg-slate-800 cursor-pointer"
+                className="px-4 py-2 rounded-xl bg-[#2563EB] hover:bg-[#1D4ED8] text-white text-xs font-semibold cursor-pointer transition-colors"
               >
                 Close Inspector
               </button>

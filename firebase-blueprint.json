@@ -237,6 +237,38 @@
         "timestamp": { "type": "string", "format": "date-time" }
       },
       "required": ["id", "type", "severity", "affectedRecordId", "expectedDecision", "actualDecision", "status", "timestamp"]
+    },
+    "User": {
+      "title": "User",
+      "description": "Enterprise CRM user account with role clearance and profile information.",
+      "type": "object",
+      "properties": {
+        "uid": { "type": "string" },
+        "name": { "type": "string" },
+        "email": { "type": "string", "format": "email" },
+        "role": { "type": "string", "enum": ["Admin", "Sales Manager", "Sales Representative", "Marketing", "Analyst"] },
+        "status": { "type": "string", "enum": ["active", "inactive"] },
+        "assignedTerritory": { "type": "string" },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["uid", "name", "email", "role", "status", "createdAt", "updatedAt"]
+    },
+    "SystemAuditLog": {
+      "title": "SystemAuditLog",
+      "description": "Immutable security and administrative audit event.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "timestamp": { "type": "string", "format": "date-time" },
+        "userId": { "type": "string" },
+        "userEmail": { "type": "string" },
+        "role": { "type": "string" },
+        "action": { "type": "string" },
+        "targetRecord": { "type": "string" },
+        "status": { "type": "string", "enum": ["SUCCESS", "FAILED", "BLOCKED"] }
+      },
+      "required": ["id", "timestamp", "userId", "userEmail", "role", "action", "status"]
     }
   },
   "firestore": {
@@ -291,6 +323,14 @@
     "/groundTruth/{groundTruthId}": {
       "schema": { "$ref": "#/entities/Anomaly" },
       "description": "Isolated ground-truth benchmark anomalies separated from training/scoring inputs."
+    },
+    "/users/{userId}": {
+      "schema": { "$ref": "#/entities/User" },
+      "description": "CRM user accounts and security role assignments."
+    },
+    "/auditLogs/{logId}": {
+      "schema": { "$ref": "#/entities/SystemAuditLog" },
+      "description": "Immutable security and regulatory audit event ledger."
     }
   }
 }

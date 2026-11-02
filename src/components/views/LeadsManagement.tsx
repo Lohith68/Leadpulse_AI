@@ -16,6 +16,7 @@ import {
   PlusCircle,
 } from 'lucide-react';
 import { useCRM } from '../../context/CRMContext';
+import { useAuth } from '../../context/AuthContext';
 import { Lead, ScoreCategory, ConsentStatus, Territory, ProductInterest } from '../../types/crm';
 import { Badge } from '../common/Badge';
 import { Modal } from '../common/Modal';
@@ -34,6 +35,7 @@ export const LeadsManagement: React.FC = () => {
     createOpportunityFromLead,
     createActivity,
   } = useCRM();
+  const { can, activeRole } = useAuth();
 
   // Search & Filter state
   const [searchTerm, setSearchTerm] = useState('');
@@ -100,12 +102,30 @@ export const LeadsManagement: React.FC = () => {
     });
   }, [leads, searchTerm, scoreCategoryFilter, territoryFilter, consentFilter, lifecycleFilter, companiesMap, contactsMap]);
 
-  // Paginated Leads
-  const totalPages = Math.ceil(filteredLeads.length / pageSize) || 1;
+  // Sorting state
+  const [sortField, setSortField] = useState<'id' | 'score' | 'createdAt'>('score');
+  const [sortAsc, setSortAsc] = useState<boolean>(false);
+
+  // Paginated Leads with Sorting
+  const sortedLeads = useMemo(() => {
+    return [...filteredLeads].sort((a, b) => {
+      let comparison = 0;
+      if (sortField === 'score') {
+        comparison = (a.totalScore || 0) - (b.totalScore || 0);
+      } else if (sortField === 'id') {
+        comparison = a.id.localeCompare(b.id);
+      } else if (sortField === 'createdAt') {
+        comparison = new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime();
+      }
+      return sortAsc ? comparison : -comparison;
+    });
+  }, [filteredLeads, sortField, sortAsc]);
+
+  const totalPages = Math.ceil(sortedLeads.length / pageSize) || 1;
   const paginatedLeads = useMemo(() => {
     const start = (currentPage - 1) * pageSize;
-    return filteredLeads.slice(start, start + pageSize);
-  }, [filteredLeads, currentPage, pageSize]);
+    return sortedLeads.slice(start, start + pageSize);
+  }, [sortedLeads, currentPage, pageSize]);
 
   // Handle Create Lead
   const handleCreateLead = async (e: React.FormEvent) => {
@@ -184,13 +204,15 @@ export const LeadsManagement: React.FC = () => {
           </p>
         </div>
 
-        <button
-          onClick={() => setIsCreateModalOpen(true)}
-          className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-lg bg-purple-700 hover:bg-purple-800 text-white text-xs font-semibold shadow-xs transition-colors"
-        >
-          <Plus className="w-4 h-4" />
-          Create New Lead
-        </button>
+        {can('create', 'leads') && (
+          <button
+            onClick={() => setIsCreateModalOpen(true)}
+            className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-lg bg-purple-700 hover:bg-purple-800 text-white text-xs font-semibold shadow-xs transition-colors cursor-pointer"
+          >
+            <Plus className="w-4 h-4" />
+            Create New Lead
+          </button>
+        )}
       </div>
 
       {/* Filter Toolbar */}
@@ -261,26 +283,60 @@ export const LeadsManagement: React.FC = () => {
       </div>
 
       {/* Main Leads Table */}
-      <div className="bg-white rounded-xl border border-slate-200 shadow-xs overflow-hidden">
+      <div className="bg-white dark:bg-[#111C2E] rounded-2xl border border-[#E2E8F0] dark:border-[#263449] shadow-xs overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full text-left border-collapse">
             <thead>
-              <tr className="bg-slate-50 border-b border-slate-200 text-[11px] font-bold text-slate-500 uppercase tracking-wider">
-                <th className="py-3 px-4">Lead ID</th>
-                <th className="py-3 px-4">Account & Contact</th>
-                <th className="py-3 px-4">Territory & Interest</th>
-                <th className="py-3 px-4 text-center">Score Breakdown</th>
+              <tr className="bg-slate-50/80 dark:bg-slate-800/60 border-b border-[#E2E8F0] dark:border-[#263449] text-[11px] font-bold text-[#64748B] dark:text-[#94A3B8] uppercase tracking-wider">
+                <th
+                  onClick={() => {
+                    if (sortField === 'id') setSortAsc(!sortAsc);
+                    else { setSortField('id'); setSortAsc(true); }
+                  }}
+                  className="py-3 px-4 cursor-pointer hover:text-[#0F172A] dark:hover:text-[#F8FAFC]"
+                >
+                  <div className="flex items-center gap-1">
+                    <span>Lead ID</span>
+                    <ArrowUpDown className="w-3 h-3" />
+                  </div>
+                </th>
+                <th className="py-3 px-4">Contact &amp; Account</th>
+                <th className="py-3 px-4">Territory &amp; Source</th>
+                <th
+                  onClick={() => {
+                    if (sortField === 'score') setSortAsc(!sortAsc);
+                    else { setSortField('score'); setSortAsc(false); }
+                  }}
+                  className="py-3 px-4 text-center cursor-pointer hover:text-[#0F172A] dark:hover:text-[#F8FAFC]"
+                >
+                  <div className="flex items-center justify-center gap-1">
+                    <span>Score (0-100)</span>
+                    <ArrowUpDown className="w-3 h-3" />
+                  </div>
+                </th>
                 <th className="py-3 px-4">Category</th>
                 <th className="py-3 px-4">Consent</th>
-                <th className="py-3 px-4">Lifecycle</th>
+                <th className="py-3 px-4">Status</th>
                 <th className="py-3 px-4">Assigned Rep</th>
+                <th
+                  onClick={() => {
+                    if (sortField === 'createdAt') setSortAsc(!sortAsc);
+                    else { setSortField('createdAt'); setSortAsc(false); }
+                  }}
+                  className="py-3 px-4 cursor-pointer hover:text-[#0F172A] dark:hover:text-[#F8FAFC]"
+                >
+                  <div className="flex items-center gap-1">
+                    <span>Created Date</span>
+                    <ArrowUpDown className="w-3 h-3" />
+                  </div>
+                </th>
                 <th className="py-3 px-4 text-right">Actions</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-slate-100 text-xs">
+            <tbody className="divide-y divide-slate-100 dark:divide-slate-800 text-xs">
               {paginatedLeads.length === 0 ? (
                 <tr>
-                  <td colSpan={9} className="py-12 text-center text-slate-400 font-medium">
+                  <td colSpan={10} className="py-12 text-center text-slate-400 font-medium">
                     No leads found matching current filter criteria.
                   </td>
                 </tr>
@@ -376,8 +432,13 @@ export const LeadsManagement: React.FC = () => {
                       </td>
 
                       {/* Assigned Rep */}
-                      <td className="py-3.5 px-4 text-slate-600">
+                      <td className="py-3.5 px-4 text-slate-600 dark:text-slate-300">
                         {rep ? rep.name.split(' ')[0] : <span className="text-slate-400 italic">Unassigned</span>}
+                      </td>
+
+                      {/* Created Date */}
+                      <td className="py-3.5 px-4 text-[11px] text-[#64748B] dark:text-[#94A3B8] whitespace-nowrap">
+                        {new Date(lead.createdAt).toLocaleDateString()}
                       </td>
 
                       {/* Actions */}
@@ -388,30 +449,34 @@ export const LeadsManagement: React.FC = () => {
                         <div className="flex items-center justify-end gap-1.5">
                           <button
                             onClick={() => setSelectedLead(lead)}
-                            className="p-1.5 text-slate-400 hover:text-purple-600 rounded-md hover:bg-purple-50 transition-colors"
+                            className="p-1.5 text-slate-400 hover:text-purple-600 rounded-md hover:bg-purple-50 transition-colors cursor-pointer"
                             title="Inspect Score & Activity"
                           >
                             <Eye className="w-4 h-4" />
                           </button>
-                          <button
-                            onClick={() => {
-                              setTargetLeadForAction(lead);
-                              setDealName(`${company?.name || 'Account'} - ${lead.productInterest}`);
-                              setIsConvertModalOpen(true);
-                            }}
-                            disabled={lead.lifecycleStatus === 'CONVERTED'}
-                            className="p-1.5 text-slate-400 hover:text-emerald-600 rounded-md hover:bg-emerald-50 transition-colors disabled:opacity-30"
-                            title="Convert to Opportunity"
-                          >
-                            <Briefcase className="w-4 h-4" />
-                          </button>
-                          <button
-                            onClick={() => deleteLead(lead.id)}
-                            className="p-1.5 text-slate-400 hover:text-rose-600 rounded-md hover:bg-rose-50 transition-colors"
-                            title="Delete Lead"
-                          >
-                            <Trash2 className="w-4 h-4" />
-                          </button>
+                          {can('create', 'opportunities') && (
+                            <button
+                              onClick={() => {
+                                setTargetLeadForAction(lead);
+                                setDealName(`${company?.name || 'Account'} - ${lead.productInterest}`);
+                                setIsConvertModalOpen(true);
+                              }}
+                              disabled={lead.lifecycleStatus === 'CONVERTED'}
+                              className="p-1.5 text-slate-400 hover:text-emerald-600 rounded-md hover:bg-emerald-50 transition-colors disabled:opacity-30 cursor-pointer"
+                              title="Convert to Opportunity"
+                            >
+                              <Briefcase className="w-4 h-4" />
+                            </button>
+                          )}
+                          {can('delete', 'leads') && (
+                            <button
+                              onClick={() => deleteLead(lead.id)}
+                              className="p-1.5 text-slate-400 hover:text-rose-600 rounded-md hover:bg-rose-50 transition-colors cursor-pointer"
+                              title="Delete Lead"
+                            >
+                              <Trash2 className="w-4 h-4" />
+                            </button>
+                          )}
                         </div>
                       </td>
                     </tr>

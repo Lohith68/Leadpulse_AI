@@ -147,6 +147,21 @@ service cloud.firestore {
       allow create, update, delete: if isSignedIn() && isValidId(groundTruthId);
     }
 
+    // Users Collection (RBAC & Profiles)
+    match /users/{userId} {
+      allow read: if isSignedIn();
+      allow create: if isSignedIn();
+      allow update: if isSignedIn();
+      allow delete: if isSignedIn();
+    }
+
+    // Audit Logs (Immutable Ledger)
+    match /auditLogs/{logId} {
+      allow read: if isSignedIn();
+      allow create: if isSignedIn() && incoming().timestamp is string;
+      allow update, delete: if false; // Immutable audit log
+    }
+
     // Metadata & Config
     match /metadata/{docId} {
       allow read, write: if isSignedIn();

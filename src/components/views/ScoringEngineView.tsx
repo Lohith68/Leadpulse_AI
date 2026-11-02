@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Target, Sparkles, CheckCircle2, RotateCw, Calculator, HelpCircle, Shield } from 'lucide-react';
+import { Target, Sparkles, CheckCircle2, RotateCw, Calculator, HelpCircle, Shield, Award } from 'lucide-react';
 import { useCRM } from '../../context/CRMContext';
 import { ScoreCategory, CompanySize, Industry, RoleLevel, Territory } from '../../types/crm';
 import { Badge } from '../common/Badge';
@@ -92,25 +92,25 @@ export const ScoringEngineView: React.FC = () => {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-white p-5 rounded-xl border border-slate-200 shadow-xs">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-white dark:bg-[#111C2E] p-6 rounded-2xl border border-[#E2E8F0] dark:border-[#263449] shadow-xs">
         <div>
-          <div className="flex items-center gap-2">
-            <h1 className="text-xl sm:text-2xl font-black text-slate-900 tracking-tight">
+          <div className="flex items-center gap-3">
+            <h1 className="text-xl sm:text-2xl font-bold text-[#0F172A] dark:text-[#F8FAFC] tracking-tight">
               Lead Scoring Engine
             </h1>
-            <Badge variant="purple" size="md">
+            <Badge variant="teal" size="md">
               100-Point Max Rule Engine
             </Badge>
           </div>
-          <p className="text-xs text-slate-500 mt-0.5">
-            Fit Score (30) + Intent Score (40) + Engagement Score (30) with strict temporal anti-leakage guards
+          <p className="text-xs text-[#64748B] dark:text-[#94A3B8] mt-1 font-normal">
+            Fit Score (30) + Intent Score (40) + Engagement Score (30) with strict temporal anti-leakage guards.
           </p>
         </div>
 
         <button
           onClick={handleRecalculateAll}
           disabled={isRecalculatingAll || leads.length === 0}
-          className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-lg bg-slate-900 hover:bg-slate-800 text-white text-xs font-semibold shadow-xs transition-colors disabled:opacity-50"
+          className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-[#2563EB] hover:bg-[#1D4ED8] text-white text-xs font-semibold shadow-xs transition-colors disabled:opacity-50 cursor-pointer shrink-0"
         >
           <RotateCw className={`w-4 h-4 ${isRecalculatingAll ? 'animate-spin' : ''}`} />
           {isRecalculatingAll ? 'Recalculating...' : 'Recalculate All Lead Scores'}
@@ -120,100 +120,100 @@ export const ScoringEngineView: React.FC = () => {
       {/* Rules Architecture Overview */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
         {/* Fit Score */}
-        <div className="bg-white p-5 rounded-xl border border-slate-200 shadow-xs space-y-3">
+        <div className="bg-white dark:bg-[#111C2E] p-5 rounded-2xl border border-[#E2E8F0] dark:border-[#263449] shadow-xs space-y-3">
           <div className="flex items-center justify-between">
-            <h2 className="text-sm font-bold text-slate-900">1. Company Fit Score</h2>
+            <h2 className="text-sm font-bold text-[#0F172A] dark:text-[#F8FAFC]">1. Company Fit Score</h2>
             <Badge variant="info">Max 30 Pts</Badge>
           </div>
-          <p className="text-xs text-slate-500">Evaluates account size, industry, job title, and geographic territory</p>
-          <ul className="text-xs space-y-2 pt-2 border-t border-slate-100 text-slate-600">
+          <p className="text-xs text-[#64748B] dark:text-[#94A3B8]">Evaluates account size, industry, job title, and geographic territory</p>
+          <ul className="text-xs space-y-2 pt-3 border-t border-[#E2E8F0] dark:border-[#263449] text-[#64748B] dark:text-[#94A3B8]">
             <li className="flex justify-between">
               <span>Company Size (500+ employees):</span>
-              <span className="font-mono font-bold text-slate-900">10 pts</span>
+              <span className="font-mono font-bold text-[#0F172A] dark:text-[#F8FAFC] tabular-nums">10 pts</span>
             </li>
             <li className="flex justify-between">
               <span>Industry Match (Tech, Health, Finance):</span>
-              <span className="font-mono font-bold text-slate-900">10 pts</span>
+              <span className="font-mono font-bold text-[#0F172A] dark:text-[#F8FAFC] tabular-nums">10 pts</span>
             </li>
             <li className="flex justify-between">
               <span>Job Role (C-Level / VP decision maker):</span>
-              <span className="font-mono font-bold text-slate-900">5 pts</span>
+              <span className="font-mono font-bold text-[#0F172A] dark:text-[#F8FAFC] tabular-nums">5 pts</span>
             </li>
             <li className="flex justify-between">
               <span>Geographic Fit (Target Territories):</span>
-              <span className="font-mono font-bold text-slate-900">5 pts</span>
+              <span className="font-mono font-bold text-[#0F172A] dark:text-[#F8FAFC] tabular-nums">5 pts</span>
             </li>
           </ul>
         </div>
 
         {/* Intent Score */}
-        <div className="bg-white p-5 rounded-xl border border-slate-200 shadow-xs space-y-3">
+        <div className="bg-white dark:bg-[#111C2E] p-5 rounded-2xl border border-[#E2E8F0] dark:border-[#263449] shadow-xs space-y-3">
           <div className="flex items-center justify-between">
-            <h2 className="text-sm font-bold text-slate-900">2. Purchase Intent Score</h2>
+            <h2 className="text-sm font-bold text-[#0F172A] dark:text-[#F8FAFC]">2. Purchase Intent Score</h2>
             <Badge variant="purple">Max 40 Pts</Badge>
           </div>
-          <p className="text-xs text-slate-500">Active commercial signals indicating active solution evaluation</p>
-          <ul className="text-xs space-y-2 pt-2 border-t border-slate-100 text-slate-600">
+          <p className="text-xs text-[#64748B] dark:text-[#94A3B8]">Active commercial signals indicating purchase readiness</p>
+          <ul className="text-xs space-y-2 pt-3 border-t border-[#E2E8F0] dark:border-[#263449] text-[#64748B] dark:text-[#94A3B8]">
             <li className="flex justify-between">
               <span>Direct Demo Request Submission:</span>
-              <span className="font-mono font-bold text-purple-700">15 pts</span>
+              <span className="font-mono font-bold text-[#2563EB] dark:text-[#3B82F6] tabular-nums">15 pts</span>
             </li>
             <li className="flex justify-between">
               <span>Pricing Page In-Depth Visit:</span>
-              <span className="font-mono font-bold text-purple-700">10 pts</span>
+              <span className="font-mono font-bold text-[#2563EB] dark:text-[#3B82F6] tabular-nums">10 pts</span>
             </li>
             <li className="flex justify-between">
               <span>Technical Product Inquiry Form:</span>
-              <span className="font-mono font-bold text-purple-700">10 pts</span>
+              <span className="font-mono font-bold text-[#2563EB] dark:text-[#3B82F6] tabular-nums">10 pts</span>
             </li>
             <li className="flex justify-between">
               <span>Purchase Intent / Quote Request:</span>
-              <span className="font-mono font-bold text-purple-700">5 pts</span>
+              <span className="font-mono font-bold text-[#2563EB] dark:text-[#3B82F6] tabular-nums">5 pts</span>
             </li>
           </ul>
         </div>
 
         {/* Engagement Score */}
-        <div className="bg-white p-5 rounded-xl border border-slate-200 shadow-xs space-y-3">
+        <div className="bg-white dark:bg-[#111C2E] p-5 rounded-2xl border border-[#E2E8F0] dark:border-[#263449] shadow-xs space-y-3">
           <div className="flex items-center justify-between">
-            <h2 className="text-sm font-bold text-slate-900">3. Engagement Score</h2>
-            <Badge variant="success">Max 30 Pts</Badge>
+            <h2 className="text-sm font-bold text-[#0F172A] dark:text-[#F8FAFC]">3. Engagement Score</h2>
+            <Badge variant="teal">Max 30 Pts</Badge>
           </div>
-          <p className="text-xs text-slate-500">Marketing interactions, email CTR, web sessions, and recency</p>
-          <ul className="text-xs space-y-2 pt-2 border-t border-slate-100 text-slate-600">
+          <p className="text-xs text-[#64748B] dark:text-[#94A3B8]">Marketing interactions, email CTR, web sessions, and recency</p>
+          <ul className="text-xs space-y-2 pt-3 border-t border-[#E2E8F0] dark:border-[#263449] text-[#64748B] dark:text-[#94A3B8]">
             <li className="flex justify-between">
               <span>Email Engagement (Click vs Open):</span>
-              <span className="font-mono font-bold text-emerald-700">10 pts</span>
+              <span className="font-mono font-bold text-[#14B8A6] tabular-nums">10 pts</span>
             </li>
             <li className="flex justify-between">
               <span>Website Session Frequency (3+ visits):</span>
-              <span className="font-mono font-bold text-emerald-700">10 pts</span>
+              <span className="font-mono font-bold text-[#14B8A6] tabular-nums">10 pts</span>
             </li>
             <li className="flex justify-between">
               <span>Event / Webinar Attendance:</span>
-              <span className="font-mono font-bold text-emerald-700">5 pts</span>
+              <span className="font-mono font-bold text-[#14B8A6] tabular-nums">5 pts</span>
             </li>
             <li className="flex justify-between">
               <span>Recency (Touchpoint in prior 14 days):</span>
-              <span className="font-mono font-bold text-emerald-700">5 pts</span>
+              <span className="font-mono font-bold text-[#14B8A6] tabular-nums">5 pts</span>
             </li>
           </ul>
         </div>
       </div>
 
       {/* Interactive Simulator */}
-      <div className="bg-white rounded-xl border border-slate-200 shadow-xs p-6 space-y-5">
+      <div className="bg-white dark:bg-[#111C2E] rounded-2xl border border-[#E2E8F0] dark:border-[#263449] shadow-xs p-6 space-y-5">
         <div className="flex items-center justify-between">
-          <div className="flex items-center gap-2.5">
-            <div className="w-8 h-8 rounded-lg bg-purple-50 flex items-center justify-center text-purple-700">
+          <div className="flex items-center gap-3">
+            <div className="w-9 h-9 rounded-xl bg-blue-50 dark:bg-blue-950/40 border border-blue-200 dark:border-blue-900/60 flex items-center justify-center text-[#2563EB] dark:text-[#3B82F6]">
               <Calculator className="w-5 h-5" />
             </div>
             <div>
-              <h2 className="text-base font-bold text-slate-900">
-                Interactive Lead Score Simulator & Sandbox
+              <h2 className="text-base font-bold text-[#0F172A] dark:text-[#F8FAFC]">
+                Interactive Lead Score Simulator &amp; Sandbox
               </h2>
-              <p className="text-xs text-slate-400">
-                Simulate arbitrary prospect parameters to verify scoring engine logic & rationale
+              <p className="text-xs text-[#64748B] dark:text-[#94A3B8]">
+                Simulate arbitrary prospect parameters to verify scoring engine logic &amp; rationale.
               </p>
             </div>
           </div>
@@ -232,14 +232,14 @@ export const ScoringEngineView: React.FC = () => {
           </Badge>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-4 pt-3 border-t border-slate-100 text-xs">
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-4 pt-3 border-t border-[#E2E8F0] dark:border-[#263449] text-xs">
           {/* Fit Controls */}
           <div>
-            <label className="block font-bold text-slate-700 mb-1">Company Size</label>
+            <label className="block font-semibold text-[#0F172A] dark:text-[#F8FAFC] mb-1">Company Size</label>
             <select
               value={simSize}
               onChange={e => setSimSize(e.target.value as any)}
-              className="w-full bg-slate-50 border border-slate-200 rounded-lg p-2 text-xs"
+              className="w-full bg-[#F8FAFC] dark:bg-[#0B1220] border border-[#E2E8F0] dark:border-[#263449] text-[#0F172A] dark:text-[#F8FAFC] rounded-xl p-2.5 text-xs focus:outline-none focus:border-[#2563EB]"
             >
               <option value="1000+">1000+ (10 pts)</option>
               <option value="501-1000">501-1000 (10 pts)</option>
@@ -249,11 +249,11 @@ export const ScoringEngineView: React.FC = () => {
           </div>
 
           <div>
-            <label className="block font-bold text-slate-700 mb-1">Industry</label>
+            <label className="block font-semibold text-[#0F172A] dark:text-[#F8FAFC] mb-1">Industry</label>
             <select
               value={simIndustry}
               onChange={e => setSimIndustry(e.target.value as any)}
-              className="w-full bg-slate-50 border border-slate-200 rounded-lg p-2 text-xs"
+              className="w-full bg-[#F8FAFC] dark:bg-[#0B1220] border border-[#E2E8F0] dark:border-[#263449] text-[#0F172A] dark:text-[#F8FAFC] rounded-xl p-2.5 text-xs focus:outline-none focus:border-[#2563EB]"
             >
               <option value="Technology">Technology (10 pts)</option>
               <option value="Healthcare">Healthcare (10 pts)</option>
@@ -263,11 +263,11 @@ export const ScoringEngineView: React.FC = () => {
           </div>
 
           <div>
-            <label className="block font-bold text-slate-700 mb-1">Stakeholder Role</label>
+            <label className="block font-semibold text-[#0F172A] dark:text-[#F8FAFC] mb-1">Stakeholder Role</label>
             <select
               value={simRole}
               onChange={e => setSimRole(e.target.value as any)}
-              className="w-full bg-slate-50 border border-slate-200 rounded-lg p-2 text-xs"
+              className="w-full bg-[#F8FAFC] dark:bg-[#0B1220] border border-[#E2E8F0] dark:border-[#263449] text-[#0F172A] dark:text-[#F8FAFC] rounded-xl p-2.5 text-xs focus:outline-none focus:border-[#2563EB]"
             >
               <option value="C-Level">C-Level (5 pts)</option>
               <option value="VP">VP (5 pts)</option>
@@ -277,11 +277,11 @@ export const ScoringEngineView: React.FC = () => {
           </div>
 
           <div>
-            <label className="block font-bold text-slate-700 mb-1">Territory</label>
+            <label className="block font-semibold text-[#0F172A] dark:text-[#F8FAFC] mb-1">Territory</label>
             <select
               value={simTerritory}
               onChange={e => setSimTerritory(e.target.value as any)}
-              className="w-full bg-slate-50 border border-slate-200 rounded-lg p-2 text-xs"
+              className="w-full bg-[#F8FAFC] dark:bg-[#0B1220] border border-[#E2E8F0] dark:border-[#263449] text-[#0F172A] dark:text-[#F8FAFC] rounded-xl p-2.5 text-xs focus:outline-none focus:border-[#2563EB]"
             >
               <option value="North America">North America (5 pts)</option>
               <option value="EMEA">EMEA (5 pts)</option>
@@ -292,74 +292,82 @@ export const ScoringEngineView: React.FC = () => {
         </div>
 
         {/* Intent & Engagement Checkboxes */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-3 border-t border-slate-100 text-xs">
-          <div className="space-y-2 bg-slate-50/70 p-3.5 rounded-lg border border-slate-200">
-            <span className="font-bold text-slate-800 block">Intent Signals:</span>
-            <label className="flex items-center gap-2 cursor-pointer">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-3 border-t border-[#E2E8F0] dark:border-[#263449] text-xs">
+          <div className="space-y-2 bg-[#F8FAFC] dark:bg-[#0B1220] p-4 rounded-xl border border-[#E2E8F0] dark:border-[#263449]">
+            <span className="font-bold text-[#0F172A] dark:text-[#F8FAFC] block">Intent Signals:</span>
+            <label className="flex items-center gap-2 cursor-pointer text-[#64748B] dark:text-[#94A3B8]">
               <input
                 type="checkbox"
                 checked={hasDemoRequest}
                 onChange={e => setHasDemoRequest(e.target.checked)}
+                className="rounded accent-[#2563EB]"
               />
               <span>Demo Request submitted (+15 pts)</span>
             </label>
-            <label className="flex items-center gap-2 cursor-pointer">
+            <label className="flex items-center gap-2 cursor-pointer text-[#64748B] dark:text-[#94A3B8]">
               <input
                 type="checkbox"
                 checked={hasPricingView}
                 onChange={e => setHasPricingView(e.target.checked)}
+                className="rounded accent-[#2563EB]"
               />
               <span>Pricing Page viewed (+10 pts)</span>
             </label>
-            <label className="flex items-center gap-2 cursor-pointer">
+            <label className="flex items-center gap-2 cursor-pointer text-[#64748B] dark:text-[#94A3B8]">
               <input
                 type="checkbox"
                 checked={hasProductInquiry}
                 onChange={e => setHasProductInquiry(e.target.checked)}
+                className="rounded accent-[#2563EB]"
               />
               <span>Product specification inquiry (+10 pts)</span>
             </label>
-            <label className="flex items-center gap-2 cursor-pointer">
+            <label className="flex items-center gap-2 cursor-pointer text-[#64748B] dark:text-[#94A3B8]">
               <input
                 type="checkbox"
                 checked={hasPurchaseIntent}
                 onChange={e => setHasPurchaseIntent(e.target.checked)}
+                className="rounded accent-[#2563EB]"
               />
               <span>Quote request / Purchase form (+5 pts)</span>
             </label>
           </div>
 
-          <div className="space-y-2 bg-slate-50/70 p-3.5 rounded-lg border border-slate-200">
-            <span className="font-bold text-slate-800 block">Engagement Signals:</span>
-            <label className="flex items-center gap-2 cursor-pointer">
+          <div className="space-y-2 bg-[#F8FAFC] dark:bg-[#0B1220] p-4 rounded-xl border border-[#E2E8F0] dark:border-[#263449]">
+            <span className="font-bold text-[#0F172A] dark:text-[#F8FAFC] block">Engagement Signals:</span>
+            <label className="flex items-center gap-2 cursor-pointer text-[#64748B] dark:text-[#94A3B8]">
               <input
                 type="checkbox"
                 checked={hasEmailClick}
                 onChange={e => setHasEmailClick(e.target.checked)}
+                className="rounded accent-[#2563EB]"
               />
               <span>Email click-through (+10 pts)</span>
             </label>
-            <label className="flex items-center gap-2 cursor-pointer">
+            <label className="flex items-center gap-2 cursor-pointer text-[#64748B] dark:text-[#94A3B8]">
               <input
                 type="checkbox"
                 checked={websiteVisits >= 3}
                 onChange={e => setWebsiteVisits(e.target.checked ? 3 : 1)}
+                className="rounded accent-[#2563EB]"
               />
               <span>Website sessions &ge; 3 visits (+10 pts)</span>
             </label>
-            <label className="flex items-center gap-2 cursor-pointer">
+            <label className="flex items-center gap-2 cursor-pointer text-[#64748B] dark:text-[#94A3B8]">
               <input
                 type="checkbox"
                 checked={hasEventAttendance}
                 onChange={e => setHasEventAttendance(e.target.checked)}
+                className="rounded accent-[#2563EB]"
               />
               <span>Webinar / Event attendance (+5 pts)</span>
             </label>
-            <label className="flex items-center gap-2 cursor-pointer">
+            <label className="flex items-center gap-2 cursor-pointer text-[#64748B] dark:text-[#94A3B8]">
               <input
                 type="checkbox"
                 checked={hasRecentInteraction}
                 onChange={e => setHasRecentInteraction(e.target.checked)}
+                className="rounded accent-[#2563EB]"
               />
               <span>Touchpoint in past 14 days (+5 pts)</span>
             </label>
@@ -367,37 +375,37 @@ export const ScoringEngineView: React.FC = () => {
         </div>
 
         {/* Real-time Calculation Result Bar */}
-        <div className="bg-slate-900 text-white p-4 rounded-xl flex flex-col sm:flex-row items-center justify-between gap-4">
-          <div className="flex items-center gap-4 text-xs font-mono">
+        <div className="bg-[#101B33] text-white p-5 rounded-2xl border border-[#263449] flex flex-col sm:flex-row items-center justify-between gap-4">
+          <div className="flex items-center gap-5 text-xs font-mono">
             <div>
               <span className="text-slate-400 block text-[10px]">FIT</span>
-              <span className="text-base font-bold text-blue-400">{simResult.fitScore}/30</span>
+              <span className="text-base font-bold text-[#3B82F6] tabular-nums">{simResult.fitScore}/30</span>
             </div>
             <span className="text-slate-600 text-lg">+</span>
             <div>
               <span className="text-slate-400 block text-[10px]">INTENT</span>
-              <span className="text-base font-bold text-purple-400">{simResult.intentScore}/40</span>
+              <span className="text-base font-bold text-[#60A5FA] tabular-nums">{simResult.intentScore}/40</span>
             </div>
             <span className="text-slate-600 text-lg">+</span>
             <div>
               <span className="text-slate-400 block text-[10px]">ENGAGEMENT</span>
-              <span className="text-base font-bold text-emerald-400">{simResult.engagementScore}/30</span>
+              <span className="text-base font-bold text-[#14B8A6] tabular-nums">{simResult.engagementScore}/30</span>
             </div>
             <span className="text-slate-600 text-lg">=</span>
             <div>
               <span className="text-slate-400 block text-[10px]">TOTAL</span>
-              <span className="text-xl font-black text-white">{simResult.totalScore}/100</span>
+              <span className="text-xl font-bold text-white tabular-nums">{simResult.totalScore}/100</span>
             </div>
           </div>
 
           <div className="text-right">
             <span
-              className={`px-3 py-1 rounded-md text-xs font-extrabold ${
+              className={`px-3 py-1.5 rounded-lg text-xs font-bold ${
                 simResult.category === 'HOT'
-                  ? 'bg-rose-500 text-white'
+                  ? 'bg-[#EF4444] text-white'
                   : simResult.category === 'WARM'
-                  ? 'bg-amber-500 text-white'
-                  : 'bg-slate-700 text-slate-200'
+                  ? 'bg-[#F59E0B] text-white'
+                  : 'bg-[#3B82F6] text-white'
               }`}
             >
               {simResult.category} PROSPECT
@@ -407,37 +415,39 @@ export const ScoringEngineView: React.FC = () => {
       </div>
 
       {/* Effective-dated Rules Table */}
-      <div className="bg-white rounded-xl border border-slate-200 shadow-xs overflow-hidden">
-        <div className="px-5 py-4 border-b border-slate-200 bg-slate-50/50 flex items-center justify-between">
-          <h2 className="text-sm font-bold text-slate-900">Effective-Dated Score Rules Configuration</h2>
-          <Badge variant="purple">{scoreRules.length} Active Rules</Badge>
+      <div className="bg-white dark:bg-[#111C2E] rounded-2xl border border-[#E2E8F0] dark:border-[#263449] shadow-xs overflow-hidden">
+        <div className="px-6 py-4 border-b border-[#E2E8F0] dark:border-[#263449] bg-[#F8FAFC] dark:bg-[#0B1220] flex items-center justify-between">
+          <h2 className="text-sm font-bold text-[#0F172A] dark:text-[#F8FAFC]">Effective-Dated Score Rules Configuration</h2>
+          <Badge variant="teal">{scoreRules.length} Active Rules</Badge>
         </div>
-        <table className="w-full text-left border-collapse text-xs">
-          <thead>
-            <tr className="bg-slate-50 text-[11px] font-bold text-slate-500 uppercase">
-              <th className="py-2.5 px-4">Rule ID</th>
-              <th className="py-2.5 px-4">Category</th>
-              <th className="py-2.5 px-4">Dimension</th>
-              <th className="py-2.5 px-4">Criteria</th>
-              <th className="py-2.5 px-4">Max Points</th>
-              <th className="py-2.5 px-4">Effective Date</th>
-            </tr>
-          </thead>
-          <tbody className="divide-y divide-slate-100">
-            {scoreRules.map(rule => (
-              <tr key={rule.id}>
-                <td className="py-2.5 px-4 font-mono font-bold text-slate-700">{rule.id}</td>
-                <td className="py-2.5 px-4 font-bold text-purple-700">{rule.category}</td>
-                <td className="py-2.5 px-4 text-slate-800">{rule.dimension}</td>
-                <td className="py-2.5 px-4 font-mono text-[11px] text-slate-500">{rule.criteria}</td>
-                <td className="py-2.5 px-4 font-mono font-bold text-slate-900">{rule.maxPoints} pts</td>
-                <td className="py-2.5 px-4 text-slate-500">
-                  {new Date(rule.effectiveFrom).toLocaleDateString()}
-                </td>
+        <div className="overflow-x-auto">
+          <table className="w-full text-left border-collapse text-xs">
+            <thead>
+              <tr className="bg-[#F8FAFC] dark:bg-[#0B1220] text-[11px] font-bold text-[#64748B] dark:text-[#94A3B8] uppercase border-b border-[#E2E8F0] dark:border-[#263449]">
+                <th className="py-3 px-4">Rule ID</th>
+                <th className="py-3 px-4">Category</th>
+                <th className="py-3 px-4">Dimension</th>
+                <th className="py-3 px-4">Criteria</th>
+                <th className="py-3 px-4">Max Points</th>
+                <th className="py-3 px-4">Effective Date</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+            <tbody className="divide-y divide-[#E2E8F0]/70 dark:divide-[#263449]/70 text-[#0F172A] dark:text-[#F8FAFC]">
+              {scoreRules.map(rule => (
+                <tr key={rule.id} className="hover:bg-[#F8FAFC]/70 dark:hover:bg-[#1E293B]/40 transition-colors">
+                  <td className="py-3 px-4 font-mono font-bold">{rule.id}</td>
+                  <td className="py-3 px-4 font-semibold text-[#2563EB] dark:text-[#3B82F6]">{rule.category}</td>
+                  <td className="py-3 px-4">{rule.dimension}</td>
+                  <td className="py-3 px-4 font-mono text-[11px] text-[#64748B] dark:text-[#94A3B8]">{rule.criteria}</td>
+                  <td className="py-3 px-4 font-mono font-bold tabular-nums">{rule.maxPoints} pts</td>
+                  <td className="py-3 px-4 text-[#64748B] dark:text-[#94A3B8] tabular-nums">
+                    {new Date(rule.effectiveFrom).toLocaleDateString()}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
       </div>
     </div>
   );

@@ -23,6 +23,7 @@ import {
   User,
 } from 'firebase/auth';
 import { db, auth, handleFirestoreError, OperationType, testConnection } from '../firebase/config';
+import { useAuth } from './AuthContext';
 import {
   Company,
   Contact,
@@ -159,7 +160,24 @@ export const CRMProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   const signalRef = useRef<{ isPaused: boolean; isCancelled: boolean }>({ isPaused: false, isCancelled: false });
   const [dbConnected, setDbConnected] = useState<boolean>(true);
   const [connectionStatus, setConnectionStatus] = useState<string>('Connecting...');
-  const [currentRole, setCurrentRole] = useState<UserRole>('Admin');
+  let authContext: any = null;
+  try {
+    authContext = useAuth();
+  } catch {
+    // Standalone / test environment
+  }
+  const [internalRole, setInternalRole] = useState<UserRole>('Admin');
+  const currentRole = authContext?.activeRole || internalRole;
+  const setCurrentRole = useCallback(
+    (r: UserRole) => {
+      if (authContext?.setPreviewRole) {
+        authContext.setPreviewRole(r === 'Admin' ? null : r);
+      } else {
+        setInternalRole(r);
+      }
+    },
+    [authContext]
+  );
   const [user, setUser] = useState<User | null>(auth.currentUser);
 
   // Monitor Firebase Auth state with token service resilience

@@ -19,6 +19,7 @@ import {
   ClipboardCheck,
 } from 'lucide-react';
 import { useCRM } from '../../context/CRMContext';
+import { useAuth } from '../../context/AuthContext';
 import { Badge } from '../common/Badge';
 import {
   exportEntityAsCSV,
@@ -59,6 +60,7 @@ export const DataManagementView: React.FC = () => {
     verifyLiveCounts,
     validationReport,
   } = useCRM();
+  const { can, activeRole } = useAuth();
 
   const [selectedMode, setSelectedMode] = useState<GeneratorMode>('BENCHMARK');
   const [customSize, setCustomSize] = useState<number>(200);
@@ -91,7 +93,6 @@ export const DataManagementView: React.FC = () => {
   const handleExport20kSynthetic = async () => {
     setIsExporting20k(true);
     try {
-      // Allow UI thread tick then generate and download full 20k dataset
       setTimeout(() => {
         exportFull20kDatasetJSON(20261022);
         setIsExporting20k(false);
@@ -132,69 +133,69 @@ export const DataManagementView: React.FC = () => {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-white p-5 rounded-xl border border-slate-200 shadow-xs">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-white dark:bg-[#111C2E] p-6 rounded-2xl border border-[#E2E8F0] dark:border-[#263449] shadow-xs">
         <div>
-          <div className="flex items-center gap-2">
-            <h1 className="text-xl sm:text-2xl font-black text-slate-900 tracking-tight">
-              Data Management & Governance
+          <div className="flex items-center gap-3">
+            <h1 className="text-xl sm:text-2xl font-bold text-[#0F172A] dark:text-[#F8FAFC] tracking-tight">
+              Data Management &amp; Governance
             </h1>
-            <Badge variant="purple" size="md">
+            <Badge variant="teal" size="md">
               Fixed SEED = 20261022
             </Badge>
           </div>
-          <p className="text-xs text-slate-500 mt-0.5">
-            Synthetic dataset generator supporting Benchmark (200) & Full (20,000) modes, controlled batch seeding, and independent Firestore verification
+          <p className="text-xs text-[#64748B] dark:text-[#94A3B8] mt-1 font-normal">
+            Synthetic dataset generator supporting Benchmark (200) &amp; Full (20,000) modes, controlled batch seeding, and independent Firestore verification.
           </p>
         </div>
 
         {/* Tab Controls */}
-        <div className="flex items-center flex-wrap gap-1 rounded-lg border border-slate-200 bg-slate-50 p-1 text-xs font-semibold">
+        <div className="flex items-center flex-wrap gap-1 rounded-xl border border-[#E2E8F0] dark:border-[#263449] bg-[#F8FAFC] dark:bg-[#0B1220] p-1 text-xs font-semibold">
           <button
             onClick={() => setActiveTab('generator')}
-            className={`px-3 py-1.5 rounded-md transition-colors ${
-              activeTab === 'generator' ? 'bg-white shadow-2xs text-purple-700 font-bold' : 'text-slate-600 hover:text-slate-900'
+            className={`px-3 py-1.5 rounded-lg transition-colors cursor-pointer ${
+              activeTab === 'generator' ? 'bg-[#2563EB] text-white shadow-xs font-bold' : 'text-[#64748B] dark:text-[#94A3B8] hover:text-[#0F172A] dark:hover:text-white'
             }`}
           >
-            Generator & Seeder
+            Generator &amp; Seeder
           </button>
           <button
             onClick={() => setActiveTab('server-verify')}
-            className={`px-3 py-1.5 rounded-md transition-colors flex items-center gap-1.5 ${
-              activeTab === 'server-verify' ? 'bg-white shadow-2xs text-emerald-700 font-bold' : 'text-slate-600 hover:text-slate-900'
+            className={`px-3 py-1.5 rounded-lg transition-colors flex items-center gap-1.5 cursor-pointer ${
+              activeTab === 'server-verify' ? 'bg-[#2563EB] text-white shadow-xs font-bold' : 'text-[#64748B] dark:text-[#94A3B8] hover:text-[#0F172A] dark:hover:text-white'
             }`}
           >
             <Server className="w-3.5 h-3.5" />
-            Live Server Verification
+            Live Verification
           </button>
           <button
             onClick={() => setActiveTab('validation')}
-            className={`px-3 py-1.5 rounded-md transition-colors flex items-center gap-1.5 ${
-              activeTab === 'validation' ? 'bg-white shadow-2xs text-blue-700 font-bold' : 'text-slate-600 hover:text-slate-900'
+            className={`px-3 py-1.5 rounded-lg transition-colors flex items-center gap-1.5 cursor-pointer ${
+              activeTab === 'validation' ? 'bg-[#2563EB] text-white shadow-xs font-bold' : 'text-[#64748B] dark:text-[#94A3B8] hover:text-[#0F172A] dark:hover:text-white'
             }`}
           >
             <ClipboardCheck className="w-3.5 h-3.5" />
-            Validation Report
+            Validation
           </button>
           <button
             onClick={() => setActiveTab('export')}
-            className={`px-3 py-1.5 rounded-md transition-colors ${
-              activeTab === 'export' ? 'bg-white shadow-2xs text-purple-700 font-bold' : 'text-slate-600 hover:text-slate-900'
+            className={`px-3 py-1.5 rounded-lg transition-colors cursor-pointer ${
+              activeTab === 'export' ? 'bg-[#2563EB] text-white shadow-xs font-bold' : 'text-[#64748B] dark:text-[#94A3B8] hover:text-[#0F172A] dark:hover:text-white'
             }`}
           >
             Exports
           </button>
           <button
             onClick={() => setActiveTab('dictionary')}
-            className={`px-3 py-1.5 rounded-md transition-colors ${
-              activeTab === 'dictionary' ? 'bg-white shadow-2xs text-purple-700 font-bold' : 'text-slate-600 hover:text-slate-900'
+            className={`px-3 py-1.5 rounded-lg transition-colors cursor-pointer ${
+              activeTab === 'dictionary' ? 'bg-[#2563EB] text-white shadow-xs font-bold' : 'text-[#64748B] dark:text-[#94A3B8] hover:text-[#0F172A] dark:hover:text-white'
             }`}
           >
             Dictionary
           </button>
           <button
             onClick={() => setActiveTab('manifest')}
-            className={`px-3 py-1.5 rounded-md transition-colors ${
-              activeTab === 'manifest' ? 'bg-white shadow-2xs text-purple-700 font-bold' : 'text-slate-600 hover:text-slate-900'
+            className={`px-3 py-1.5 rounded-lg transition-colors cursor-pointer ${
+              activeTab === 'manifest' ? 'bg-[#2563EB] text-white shadow-xs font-bold' : 'text-[#64748B] dark:text-[#94A3B8] hover:text-[#0F172A] dark:hover:text-white'
             }`}
           >
             Manifest
@@ -205,25 +206,25 @@ export const DataManagementView: React.FC = () => {
       {/* Tab 1: Synthetic Data Generator */}
       {activeTab === 'generator' && (
         <div className="space-y-6">
-          <div className="bg-white rounded-xl border border-slate-200 p-6 shadow-xs space-y-5">
+          <div className="bg-white dark:bg-[#111C2E] rounded-2xl border border-[#E2E8F0] dark:border-[#263449] p-6 shadow-xs space-y-5">
             <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-2">
               <div>
-                <h2 className="text-base font-bold text-slate-900 flex items-center gap-2">
-                  <Sparkles className="w-4 h-4 text-purple-600" />
+                <h2 className="text-base font-bold text-[#0F172A] dark:text-[#F8FAFC] flex items-center gap-2">
+                  <Sparkles className="w-4 h-4 text-[#2563EB]" />
                   Deterministic Synthetic Generation Engine (Mulberry32 PRNG)
                 </h2>
-                <p className="text-xs text-slate-500 mt-0.5">
-                  Parent records generated before child records with 100% valid foreign keys, labelled duplicates, opted-out leads, and all 5 mandatory anomaly scenarios
+                <p className="text-xs text-[#64748B] dark:text-[#94A3B8] mt-1">
+                  Parent records generated before child records with 100% valid foreign keys, labelled duplicates, opted-out leads, and all 5 mandatory anomaly scenarios.
                 </p>
               </div>
-              <span className="font-mono text-xs font-bold px-2.5 py-1 bg-slate-100 text-slate-700 rounded-md border border-slate-200 self-start">
+              <span className="font-mono text-xs font-bold px-3 py-1 bg-[#F8FAFC] dark:bg-[#0B1220] text-[#0F172A] dark:text-[#F8FAFC] rounded-lg border border-[#E2E8F0] dark:border-[#263449] self-start">
                 SEED: 20261022
               </span>
             </div>
 
-            <div className="p-5 rounded-xl bg-slate-50 border border-slate-200 space-y-5 text-xs">
+            <div className="p-5 rounded-2xl bg-[#F8FAFC] dark:bg-[#0B1220] border border-[#E2E8F0] dark:border-[#263449] space-y-5 text-xs">
               <div>
-                <label className="block font-bold text-slate-800 mb-2">
+                <label className="block font-bold text-[#0F172A] dark:text-[#F8FAFC] mb-2">
                   Select Seeding Mode:
                 </label>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -231,20 +232,20 @@ export const DataManagementView: React.FC = () => {
                   <button
                     type="button"
                     onClick={() => setSelectedMode('BENCHMARK')}
-                    className={`p-4 rounded-xl border text-left transition-all relative ${
+                    className={`p-5 rounded-2xl border text-left transition-all relative cursor-pointer ${
                       selectedMode === 'BENCHMARK'
-                        ? 'bg-purple-50/80 border-purple-500 text-purple-950 shadow-xs ring-2 ring-purple-500/20'
-                        : 'bg-white border-slate-200 text-slate-700 hover:bg-slate-50'
+                        ? 'bg-blue-50/70 dark:bg-blue-950/40 border-[#2563EB] shadow-xs ring-2 ring-[#2563EB]/20'
+                        : 'bg-white dark:bg-[#111C2E] border-[#E2E8F0] dark:border-[#263449] hover:border-[#2563EB]/40'
                     }`}
                   >
                     <div className="flex items-center justify-between mb-2">
-                      <span className="font-black text-sm text-slate-900">BENCHMARK MODE</span>
-                      <Badge variant="purple" size="sm">Quick Testing</Badge>
+                      <span className="font-bold text-sm text-[#0F172A] dark:text-[#F8FAFC]">BENCHMARK MODE</span>
+                      <Badge variant="teal" size="sm">Quick Testing</Badge>
                     </div>
-                    <div className="font-mono text-xs text-purple-800 font-bold mb-1">
+                    <div className="font-mono text-xs text-[#2563EB] dark:text-[#3B82F6] font-bold mb-1">
                       200 Leads • 100 Contacts • 50 Companies • 60 Opportunities
                     </div>
-                    <p className="text-[11px] text-slate-500 leading-relaxed">
+                    <p className="text-[11px] text-[#64748B] dark:text-[#94A3B8] leading-relaxed">
                       Instant verification dataset for automated unit tests, fast schema validation, and immediate interactive exploration.
                     </p>
                   </button>
@@ -253,20 +254,20 @@ export const DataManagementView: React.FC = () => {
                   <button
                     type="button"
                     onClick={() => setSelectedMode('FULL')}
-                    className={`p-4 rounded-xl border text-left transition-all relative ${
+                    className={`p-5 rounded-2xl border text-left transition-all relative cursor-pointer ${
                       selectedMode === 'FULL'
-                        ? 'bg-purple-50/80 border-purple-500 text-purple-950 shadow-xs ring-2 ring-purple-500/20'
-                        : 'bg-white border-slate-200 text-slate-700 hover:bg-slate-50'
+                        ? 'bg-blue-50/70 dark:bg-blue-950/40 border-[#2563EB] shadow-xs ring-2 ring-[#2563EB]/20'
+                        : 'bg-white dark:bg-[#111C2E] border-[#E2E8F0] dark:border-[#263449] hover:border-[#2563EB]/40'
                     }`}
                   >
                     <div className="flex items-center justify-between mb-2">
-                      <span className="font-black text-sm text-slate-900">FULL MODE</span>
+                      <span className="font-bold text-sm text-[#0F172A] dark:text-[#F8FAFC]">FULL MODE</span>
                       <Badge variant="success" size="sm">Full Problem Statement</Badge>
                     </div>
-                    <div className="font-mono text-xs text-emerald-800 font-bold mb-1">
+                    <div className="font-mono text-xs text-emerald-600 dark:text-emerald-400 font-bold mb-1">
                       20,000 Leads • 10,000 Contacts • 5,000 Companies • 3,000 Opportunities
                     </div>
-                    <p className="text-[11px] text-slate-500 leading-relaxed">
+                    <p className="text-[11px] text-[#64748B] dark:text-[#94A3B8] leading-relaxed">
                       Complete enterprise scale with all 11 entities, ~40,000 activities, ~16,000 SLA tasks, stage histories, duplicate labels, and isolated ground truth.
                     </p>
                   </button>
@@ -275,18 +276,18 @@ export const DataManagementView: React.FC = () => {
 
               {/* Progress & Batch Controls during Seeding */}
               {isSeeding && seedingProgress && (
-                <div className="p-4 bg-purple-50/90 border border-purple-200 rounded-xl space-y-3">
+                <div className="p-4 bg-blue-50/80 dark:bg-blue-950/40 border border-blue-200 dark:border-blue-900/60 rounded-xl space-y-3">
                   <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
-                    <div className="font-bold text-purple-950 text-xs flex items-center gap-2">
-                      <RotateCw className="w-4 h-4 text-purple-700 animate-spin" />
+                    <div className="font-bold text-[#0F172A] dark:text-[#F8FAFC] text-xs flex items-center gap-2">
+                      <RotateCw className="w-4 h-4 text-[#2563EB] animate-spin" />
                       <span>{seedingProgress.message}</span>
                     </div>
                     <div className="flex items-center gap-2">
-                      <span className="font-mono font-bold text-purple-900 text-sm">
+                      <span className="font-mono font-bold text-[#2563EB] dark:text-[#3B82F6] text-sm tabular-nums">
                         {seedingProgress.percentage}%
                       </span>
                       {seedingProgress.totalBatches > 0 && (
-                        <span className="text-[11px] font-semibold text-purple-700 bg-purple-100 px-2 py-0.5 rounded">
+                        <span className="text-[11px] font-semibold text-[#2563EB] dark:text-[#3B82F6] bg-blue-100 dark:bg-blue-900/50 px-2 py-0.5 rounded-md">
                           Batch {seedingProgress.batchIndex} / {seedingProgress.totalBatches}
                         </span>
                       )}
@@ -294,24 +295,24 @@ export const DataManagementView: React.FC = () => {
                   </div>
 
                   {/* Progress Bar */}
-                  <div className="w-full bg-purple-200/70 rounded-full h-2.5 overflow-hidden">
+                  <div className="w-full bg-blue-200/70 dark:bg-blue-950 rounded-full h-2.5 overflow-hidden">
                     <div
-                      className="bg-purple-700 h-2.5 rounded-full transition-all duration-300"
+                      className="bg-[#2563EB] h-2.5 rounded-full transition-all duration-300"
                       style={{ width: `${Math.min(100, seedingProgress.percentage)}%` }}
                     />
                   </div>
 
                   {/* Operational Controls: Pause / Resume / Cancel */}
                   <div className="flex items-center justify-between pt-1 text-[11px]">
-                    <span className="text-purple-800">
-                      Phase: <strong className="uppercase">{seedingProgress.phase}</strong> ({seedingProgress.current.toLocaleString()} / {seedingProgress.total.toLocaleString()} records)
+                    <span className="text-[#64748B] dark:text-[#94A3B8]">
+                      Phase: <strong className="uppercase text-[#0F172A] dark:text-[#F8FAFC]">{seedingProgress.phase}</strong> ({seedingProgress.current.toLocaleString()} / {seedingProgress.total.toLocaleString()} records)
                     </span>
                     <div className="flex items-center gap-2">
                       {isPaused ? (
                         <button
                           type="button"
                           onClick={resumeSeeding}
-                          className="px-2.5 py-1 rounded bg-purple-700 text-white font-bold hover:bg-purple-800 flex items-center gap-1"
+                          className="px-3 py-1 rounded-lg bg-[#2563EB] text-white font-bold hover:bg-[#1D4ED8] flex items-center gap-1 cursor-pointer"
                         >
                           <Play className="w-3 h-3" /> Resume
                         </button>
@@ -319,7 +320,7 @@ export const DataManagementView: React.FC = () => {
                         <button
                           type="button"
                           onClick={pauseSeeding}
-                          className="px-2.5 py-1 rounded bg-amber-600 text-white font-bold hover:bg-amber-700 flex items-center gap-1"
+                          className="px-3 py-1 rounded-lg bg-amber-600 text-white font-bold hover:bg-amber-700 flex items-center gap-1 cursor-pointer"
                         >
                           <Pause className="w-3 h-3" /> Pause
                         </button>
@@ -327,7 +328,7 @@ export const DataManagementView: React.FC = () => {
                       <button
                         type="button"
                         onClick={cancelSeeding}
-                        className="px-2.5 py-1 rounded bg-red-100 text-red-700 font-bold hover:bg-red-200 flex items-center gap-1"
+                        className="px-3 py-1 rounded-lg bg-red-100 text-red-700 font-bold hover:bg-red-200 flex items-center gap-1 cursor-pointer"
                       >
                         <XCircle className="w-3 h-3" /> Cancel
                       </button>
@@ -337,39 +338,45 @@ export const DataManagementView: React.FC = () => {
               )}
 
               {/* Seeding Action Bar */}
-              <div className="pt-2 flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-t border-slate-200">
-                <span className="text-slate-500 text-[11px]">
-                  Batch writes safe chunking (&le; 300 docs/batch) with exponential backoff retries and idempotent merge keys
+              <div className="pt-3 flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-t border-[#E2E8F0] dark:border-[#263449]">
+                <span className="text-[#64748B] dark:text-[#94A3B8] text-[11px]">
+                  Batch writes safe chunking (&le; 300 docs/batch) with exponential backoff retries and idempotent merge keys.
                 </span>
                 <div className="flex items-center gap-3">
-                  <button
-                    onClick={handleTriggerSeed}
-                    disabled={isSeeding}
-                    className="px-6 py-2.5 rounded-lg bg-purple-700 hover:bg-purple-800 text-white font-bold shadow-xs transition-colors disabled:opacity-50 flex items-center gap-2 cursor-pointer"
-                  >
-                    <Sparkles className="w-4 h-4" />
-                    {isSeeding
-                      ? isPaused
-                        ? 'Seeding Paused...'
-                        : 'Writing to Cloud Firestore...'
-                      : `Seed ${selectedMode} (${selectedMode === 'BENCHMARK' ? '200' : '20,000'} Leads) into Firestore`}
-                  </button>
+                  {can('create', 'data_management') ? (
+                    <button
+                      onClick={handleTriggerSeed}
+                      disabled={isSeeding}
+                      className="px-6 py-2.5 rounded-xl bg-[#2563EB] hover:bg-[#1D4ED8] text-white font-bold text-xs shadow-xs transition-colors disabled:opacity-50 flex items-center gap-2 cursor-pointer"
+                    >
+                      <Sparkles className="w-4 h-4" />
+                      {isSeeding
+                        ? isPaused
+                          ? 'Seeding Paused...'
+                          : 'Writing to Cloud Firestore...'
+                        : `Seed ${selectedMode} (${selectedMode === 'BENCHMARK' ? '200' : '20,000'} Leads) into Firestore`}
+                    </button>
+                  ) : (
+                    <div className="px-4 py-2 rounded-xl bg-slate-100 dark:bg-slate-800 text-[#64748B] dark:text-[#94A3B8] font-semibold text-xs border border-[#E2E8F0] dark:border-[#263449]">
+                      Admin Clearance Required to Execute Data Generation
+                    </div>
+                  )}
                 </div>
               </div>
             </div>
           </div>
 
           {/* Quick Server Counts Summary Strip */}
-          <div className="bg-white rounded-xl border border-slate-200 p-5 shadow-xs flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          <div className="bg-white dark:bg-[#111C2E] rounded-2xl border border-[#E2E8F0] dark:border-[#263449] p-5 shadow-xs flex flex-col sm:flex-row sm:items-center justify-between gap-4">
             <div className="flex items-center gap-3">
-              <div className="p-2.5 bg-emerald-50 rounded-lg text-emerald-700">
+              <div className="p-2.5 bg-emerald-50 dark:bg-emerald-950/40 rounded-xl text-emerald-600 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-900/60">
                 <Server className="w-5 h-5" />
               </div>
               <div>
-                <div className="text-xs font-bold text-slate-900">
+                <div className="text-xs font-bold text-[#0F172A] dark:text-[#F8FAFC]">
                   Cloud Firestore Persistence Status
                 </div>
-                <div className="text-[11px] text-slate-500">
+                <div className="text-[11px] text-[#64748B] dark:text-[#94A3B8] mt-0.5">
                   {lastVerifiedAt ? (
                     <span>Last independently verified at {new Date(lastVerifiedAt).toLocaleTimeString()}</span>
                   ) : (
@@ -382,9 +389,9 @@ export const DataManagementView: React.FC = () => {
             <button
               onClick={() => verifyLiveCounts()}
               disabled={isVerifyingServer}
-              className="px-4 py-2 rounded-lg border border-slate-200 bg-slate-50 hover:bg-slate-100 text-slate-800 font-bold text-xs flex items-center gap-2 transition-colors cursor-pointer disabled:opacity-50"
+              className="px-4 py-2 rounded-xl border border-[#E2E8F0] dark:border-[#263449] bg-[#F8FAFC] dark:bg-[#0B1220] hover:bg-slate-100 dark:hover:bg-slate-800 text-[#0F172A] dark:text-[#F8FAFC] font-semibold text-xs flex items-center gap-2 transition-colors cursor-pointer disabled:opacity-50"
             >
-              <RefreshCw className={`w-3.5 h-3.5 ${isVerifyingServer ? 'animate-spin' : ''}`} />
+              <RefreshCw className={`w-3.5 h-3.5 text-[#2563EB] ${isVerifyingServer ? 'animate-spin' : ''}`} />
               {isVerifyingServer ? 'Querying Firestore Server...' : 'Verify Counts in Cloud Firestore'}
             </button>
           </div>
@@ -394,22 +401,22 @@ export const DataManagementView: React.FC = () => {
       {/* Tab 2: Independent Live Server Verification Panel */}
       {activeTab === 'server-verify' && (
         <div className="space-y-6">
-          <div className="bg-white rounded-xl border border-slate-200 p-6 shadow-xs space-y-5">
+          <div className="bg-white dark:bg-[#111C2E] rounded-2xl border border-[#E2E8F0] dark:border-[#263449] p-6 shadow-xs space-y-5">
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
               <div>
-                <h2 className="text-base font-bold text-slate-900 flex items-center gap-2">
+                <h2 className="text-base font-bold text-[#0F172A] dark:text-[#F8FAFC] flex items-center gap-2">
                   <Server className="w-5 h-5 text-emerald-600" />
-                  Independent Cloud Firestore Server Verification (Module 15)
+                  Independent Cloud Firestore Server Verification
                 </h2>
-                <p className="text-xs text-slate-500 mt-0.5">
-                  Queries actual persisted documents in Cloud Firestore via <code className="font-mono bg-slate-100 px-1 py-0.5 rounded">getCountFromServer</code> to confirm real storage
+                <p className="text-xs text-[#64748B] dark:text-[#94A3B8] mt-1">
+                  Queries actual persisted documents in Cloud Firestore via <code className="font-mono bg-[#F8FAFC] dark:bg-[#0B1220] px-1.5 py-0.5 rounded border border-[#E2E8F0] dark:border-[#263449]">getCountFromServer</code> to confirm real storage.
                 </p>
               </div>
 
               <button
                 onClick={() => verifyLiveCounts()}
                 disabled={isVerifyingServer}
-                className="px-4 py-2.5 rounded-lg bg-emerald-700 hover:bg-emerald-800 text-white font-bold text-xs flex items-center gap-2 transition-colors cursor-pointer disabled:opacity-50"
+                className="px-4 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs flex items-center gap-2 transition-colors cursor-pointer disabled:opacity-50"
               >
                 <RefreshCw className={`w-4 h-4 ${isVerifyingServer ? 'animate-spin' : ''}`} />
                 {isVerifyingServer ? 'Querying Cloud Firestore Server...' : 'Query Live Server Counts Now'}
@@ -417,18 +424,18 @@ export const DataManagementView: React.FC = () => {
             </div>
 
             {/* Verification Status Header */}
-            <div className="p-4 rounded-xl bg-slate-50 border border-slate-200 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs">
+            <div className="p-4 rounded-xl bg-[#F8FAFC] dark:bg-[#0B1220] border border-[#E2E8F0] dark:border-[#263449] flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs">
               <div className="flex items-center gap-2">
-                <span className="font-bold text-slate-700">Verification Source:</span>
+                <span className="font-semibold text-[#0F172A] dark:text-[#F8FAFC]">Verification Source:</span>
                 <Badge variant="success" size="md">
                   Server-side Aggregation API
                 </Badge>
-                <span className="text-slate-400">•</span>
-                <span className="text-slate-500">Database ID: <code className="font-mono">ai-studio-1791f9ed-f999-4a0b-a411-b32893a64c15</code></span>
+                <span className="text-[#64748B] dark:text-[#94A3B8]">•</span>
+                <span className="text-[#64748B] dark:text-[#94A3B8]">Database: <code className="font-mono">ai-studio-1791f9ed-f999-4a0b-a411-b32893a64c15</code></span>
               </div>
-              <div className="text-[11px] text-slate-500">
+              <div className="text-[11px]">
                 {lastVerifiedAt ? (
-                  <span className="text-emerald-700 font-bold">
+                  <span className="text-emerald-600 dark:text-emerald-400 font-bold">
                     ✓ Verified at: {new Date(lastVerifiedAt).toLocaleString()}
                   </span>
                 ) : (
@@ -438,49 +445,49 @@ export const DataManagementView: React.FC = () => {
             </div>
 
             {/* Counts Grid */}
-            <div className="overflow-x-auto">
-              <table className="w-full text-left border-collapse text-xs">
+            <div className="overflow-x-auto border border-[#E2E8F0] dark:border-[#263449] rounded-xl">
+              <table className="w-full text-left border-collapse text-xs text-[#0F172A] dark:text-[#F8FAFC]">
                 <thead>
-                  <tr className="border-b border-slate-200 bg-slate-50/70 text-slate-600 font-bold">
-                    <th className="py-2.5 px-3">Entity Collection</th>
-                    <th className="py-2.5 px-3">Benchmark Target</th>
-                    <th className="py-2.5 px-3">Full Mode Target</th>
-                    <th className="py-2.5 px-3">Client In-Memory</th>
-                    <th className="py-2.5 px-3">Actual Firestore Count</th>
-                    <th className="py-2.5 px-3">Persistence State</th>
+                  <tr className="border-b border-[#E2E8F0] dark:border-[#263449] bg-[#F8FAFC] dark:bg-[#0B1220] text-[11px] font-bold text-[#64748B] dark:text-[#94A3B8] uppercase">
+                    <th className="py-3 px-4">Entity Collection</th>
+                    <th className="py-3 px-4">Benchmark Target</th>
+                    <th className="py-3 px-4">Full Mode Target</th>
+                    <th className="py-3 px-4">Client In-Memory</th>
+                    <th className="py-3 px-4">Actual Firestore Count</th>
+                    <th className="py-3 px-4">Persistence State</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-slate-100">
+                <tbody className="divide-y divide-[#E2E8F0]/70 dark:divide-[#263449]/70">
                   {collectionsSummary.map(col => {
                     const serverCount = liveServerCounts?.[col.key];
                     const isVerified = serverCount !== undefined && serverCount > 0;
                     return (
-                      <tr key={col.key} className="hover:bg-slate-50/50">
-                        <td className="py-2.5 px-3 font-mono font-bold text-slate-900">
+                      <tr key={col.key} className="hover:bg-[#F8FAFC]/70 dark:hover:bg-[#1E293B]/40 transition-colors">
+                        <td className="py-3.5 px-4 font-mono font-bold">
                           {col.key}
                         </td>
-                        <td className="py-2.5 px-3 text-slate-500 font-mono">
+                        <td className="py-3.5 px-4 text-[#64748B] dark:text-[#94A3B8] font-mono tabular-nums">
                           {col.targetBenchmark}
                         </td>
-                        <td className="py-2.5 px-3 text-slate-500 font-mono">
+                        <td className="py-3.5 px-4 text-[#64748B] dark:text-[#94A3B8] font-mono tabular-nums">
                           {col.targetFull}
                         </td>
-                        <td className="py-2.5 px-3 font-mono text-slate-700 font-semibold">
+                        <td className="py-3.5 px-4 font-mono font-semibold tabular-nums">
                           {col.inMemory.toLocaleString()}
                         </td>
-                        <td className="py-2.5 px-3 font-mono font-bold text-purple-900">
+                        <td className="py-3.5 px-4 font-mono font-bold text-[#2563EB] dark:text-[#3B82F6] tabular-nums">
                           {serverCount !== undefined ? serverCount.toLocaleString() : (
-                            <span className="text-slate-400 font-normal italic">Click query</span>
+                            <span className="text-[#64748B] dark:text-[#94A3B8] font-normal italic">Click query</span>
                           )}
                         </td>
-                        <td className="py-2.5 px-3">
+                        <td className="py-3.5 px-4">
                           {isVerified ? (
                             <Badge variant="success" size="sm">
                               ✓ VERIFIED IN FIRESTORE
                             </Badge>
                           ) : (
                             <Badge variant="warning" size="sm">
-                              AWAITING VERIFICATION
+                              AWAITING QUERY
                             </Badge>
                           )}
                         </td>
@@ -497,21 +504,21 @@ export const DataManagementView: React.FC = () => {
       {/* Tab 3: System Validation Report */}
       {activeTab === 'validation' && (
         <div className="space-y-6">
-          <div className="bg-white rounded-xl border border-slate-200 p-6 shadow-xs space-y-5">
+          <div className="bg-white dark:bg-[#111C2E] rounded-2xl border border-[#E2E8F0] dark:border-[#263449] p-6 shadow-xs space-y-5">
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
               <div>
-                <h2 className="text-base font-bold text-slate-900 flex items-center gap-2">
-                  <ShieldCheck className="w-5 h-5 text-purple-700" />
-                  12-Point Automated System Integrity Report (Module 12)
+                <h2 className="text-base font-bold text-[#0F172A] dark:text-[#F8FAFC] flex items-center gap-2">
+                  <ShieldCheck className="w-5 h-5 text-[#2563EB]" />
+                  12-Point Automated System Integrity Report
                 </h2>
-                <p className="text-xs text-slate-500 mt-0.5">
-                  Automated validation verifying primary key uniqueness, foreign keys, enums, consent enforcement, territory boundaries, and lifecycle states
+                <p className="text-xs text-[#64748B] dark:text-[#94A3B8] mt-1">
+                  Automated validation verifying primary key uniqueness, foreign keys, enums, consent enforcement, territory boundaries, and lifecycle states.
                 </p>
               </div>
 
               <div className="flex items-center gap-3">
-                <span className="text-xs text-slate-500">
-                  Validation Score: <strong className="text-slate-900 text-sm">{validationReport.score}%</strong>
+                <span className="text-xs text-[#64748B] dark:text-[#94A3B8]">
+                  Validation Score: <strong className="text-[#0F172A] dark:text-[#F8FAFC] text-sm tabular-nums">{validationReport.score}%</strong>
                 </span>
                 <Badge
                   variant={
@@ -532,20 +539,20 @@ export const DataManagementView: React.FC = () => {
               {validationReport.checks.map(check => (
                 <div
                   key={check.id}
-                  className={`p-3.5 rounded-lg border ${
+                  className={`p-4 rounded-xl border ${
                     check.status === 'PASSED'
-                      ? 'bg-emerald-50/50 border-emerald-200'
+                      ? 'bg-emerald-50/20 dark:bg-emerald-950/20 border-emerald-200 dark:border-emerald-900/40'
                       : check.status === 'WARNING'
-                      ? 'bg-amber-50/50 border-amber-200'
-                      : 'bg-rose-50/50 border-rose-200'
+                      ? 'bg-amber-50/20 dark:bg-amber-950/20 border-amber-200 dark:border-amber-900/40'
+                      : 'bg-rose-50/20 dark:bg-rose-950/20 border-rose-200 dark:border-rose-900/40'
                   }`}
                 >
                   <div className="flex items-center justify-between mb-1.5">
                     <div className="flex items-center gap-2">
-                      <span className="font-mono text-[10px] font-bold text-slate-500 px-1.5 py-0.5 bg-white rounded border border-slate-200">
+                      <span className="font-mono text-[10px] font-bold text-[#64748B] dark:text-[#94A3B8] px-2 py-0.5 bg-white dark:bg-[#111C2E] rounded border border-[#E2E8F0] dark:border-[#263449]">
                         {check.id}
                       </span>
-                      <span className="font-bold text-slate-900">{check.name}</span>
+                      <span className="font-bold text-[#0F172A] dark:text-[#F8FAFC]">{check.name}</span>
                     </div>
                     <Badge
                       variant={check.status === 'PASSED' ? 'success' : check.status === 'WARNING' ? 'warning' : 'danger'}
@@ -554,8 +561,8 @@ export const DataManagementView: React.FC = () => {
                       {check.status}
                     </Badge>
                   </div>
-                  <div className="text-[11px] text-slate-600 mb-1">{check.message}</div>
-                  <div className="text-[10px] text-slate-400 font-mono">
+                  <div className="text-[11px] text-[#64748B] dark:text-[#94A3B8] mb-1">{check.message}</div>
+                  <div className="text-[10px] text-[#64748B] dark:text-[#94A3B8] font-mono tabular-nums">
                     Category: {check.category} • Passed: {check.passedCount} • Failed: {check.failedCount}
                   </div>
                 </div>
@@ -569,211 +576,106 @@ export const DataManagementView: React.FC = () => {
       {activeTab === 'export' && (
         <div className="space-y-6">
           {/* Universal Full Exports */}
-          <div className="bg-white rounded-xl border border-slate-200 p-6 shadow-xs space-y-4">
-            <h2 className="text-base font-bold text-slate-900">Database Full Exports</h2>
-            <p className="text-xs text-slate-500">
-              Export entire CRM data state across relational DDL, full JSON dumps, and isolated benchmark ground truth
+          <div className="bg-white dark:bg-[#111C2E] rounded-2xl border border-[#E2E8F0] dark:border-[#263449] p-6 shadow-xs space-y-4">
+            <h2 className="text-base font-bold text-[#0F172A] dark:text-[#F8FAFC]">Database Full Exports</h2>
+            <p className="text-xs text-[#64748B] dark:text-[#94A3B8]">
+              Export entire CRM data state across relational DDL, full JSON dumps, and isolated benchmark ground truth.
             </p>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 pt-2">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 pt-2">
               <button
                 onClick={handleExport20kSynthetic}
                 disabled={isExporting20k}
-                className="p-4 rounded-xl border border-purple-200 bg-purple-50/60 hover:bg-purple-100/70 transition-colors text-left flex items-start justify-between cursor-pointer"
+                className="p-5 rounded-2xl border border-[#2563EB]/40 bg-blue-50/60 dark:bg-blue-950/30 hover:bg-blue-100/70 transition-colors text-left flex items-start justify-between cursor-pointer"
               >
                 <div>
-                  <Sparkles className="w-5 h-5 text-purple-700 mb-2" />
-                  <div className="font-bold text-purple-950 text-xs">Export Full 20k Dataset (JSON)</div>
-                  <div className="text-[11px] text-purple-800 mt-0.5">
+                  <Sparkles className="w-5 h-5 text-[#2563EB] mb-2" />
+                  <div className="font-bold text-[#0F172A] dark:text-[#F8FAFC] text-xs">Export Full 20k Dataset (JSON)</div>
+                  <div className="text-[11px] text-[#2563EB] dark:text-[#3B82F6] mt-1 font-medium">
                     {isExporting20k ? 'Generating 20k JSON...' : 'Mulberry32 PRNG Full 20k records'}
                   </div>
                 </div>
-                <Download className="w-4 h-4 text-purple-600" />
+                <Download className="w-4 h-4 text-[#2563EB]" />
               </button>
 
               <button
                 onClick={handleExportAllJSON}
-                className="p-4 rounded-xl border border-slate-200 bg-slate-50 hover:bg-slate-100 transition-colors text-left flex items-start justify-between cursor-pointer"
+                className="p-5 rounded-2xl border border-[#E2E8F0] dark:border-[#263449] bg-[#F8FAFC] dark:bg-[#0B1220] hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors text-left flex items-start justify-between cursor-pointer"
               >
                 <div>
-                  <FileCode className="w-5 h-5 text-purple-700 mb-2" />
-                  <div className="font-bold text-slate-900 text-xs">Current CRM JSON Dump</div>
-                  <div className="text-[11px] text-slate-500 mt-0.5">
+                  <FileCode className="w-5 h-5 text-[#2563EB] mb-2" />
+                  <div className="font-bold text-[#0F172A] dark:text-[#F8FAFC] text-xs">Current CRM JSON Dump</div>
+                  <div className="text-[11px] text-[#64748B] dark:text-[#94A3B8] mt-1">
                     All 11 entities currently in memory
                   </div>
                 </div>
-                <Download className="w-4 h-4 text-slate-400" />
+                <Download className="w-4 h-4 text-[#64748B] dark:text-[#94A3B8]" />
               </button>
 
               <button
                 onClick={handleExportSQL}
-                className="p-4 rounded-xl border border-slate-200 bg-slate-50 hover:bg-slate-100 transition-colors text-left flex items-start justify-between cursor-pointer"
+                className="p-5 rounded-2xl border border-[#E2E8F0] dark:border-[#263449] bg-[#F8FAFC] dark:bg-[#0B1220] hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors text-left flex items-start justify-between cursor-pointer"
               >
                 <div>
-                  <HardDrive className="w-5 h-5 text-blue-700 mb-2" />
-                  <div className="font-bold text-slate-900 text-xs">PostgreSQL / Cloud SQL DDL</div>
-                  <div className="text-[11px] text-slate-500 mt-0.5">
-                    Complete SQL schema with table constraints & indices
+                  <HardDrive className="w-5 h-5 text-[#14B8A6] mb-2" />
+                  <div className="font-bold text-[#0F172A] dark:text-[#F8FAFC] text-xs">PostgreSQL / Cloud SQL DDL</div>
+                  <div className="text-[11px] text-[#64748B] dark:text-[#94A3B8] mt-1">
+                    Complete SQL schema with table constraints &amp; indices
                   </div>
                 </div>
-                <Download className="w-4 h-4 text-slate-400" />
+                <Download className="w-4 h-4 text-[#64748B] dark:text-[#94A3B8]" />
               </button>
 
               <button
                 onClick={() => exportGroundTruthCSV(groundTruth)}
-                className="p-4 rounded-xl border border-slate-200 bg-slate-50 hover:bg-slate-100 transition-colors text-left flex items-start justify-between cursor-pointer"
+                className="p-5 rounded-2xl border border-[#E2E8F0] dark:border-[#263449] bg-[#F8FAFC] dark:bg-[#0B1220] hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors text-left flex items-start justify-between cursor-pointer"
               >
                 <div>
-                  <ShieldCheck className="w-5 h-5 text-emerald-700 mb-2" />
-                  <div className="font-bold text-slate-900 text-xs">ground_truth.csv</div>
-                  <div className="text-[11px] text-slate-500 mt-0.5">
+                  <ShieldCheck className="w-5 h-5 text-emerald-600 mb-2" />
+                  <div className="font-bold text-[#0F172A] dark:text-[#F8FAFC] text-xs">ground_truth.csv</div>
+                  <div className="text-[11px] text-[#64748B] dark:text-[#94A3B8] mt-1">
                     Separated benchmark test scenarios for evaluation
                   </div>
                 </div>
-                <Download className="w-4 h-4 text-slate-400" />
+                <Download className="w-4 h-4 text-[#64748B] dark:text-[#94A3B8]" />
               </button>
             </div>
           </div>
 
           {/* Entity CSV Exports Grid */}
-          <div className="bg-white rounded-xl border border-slate-200 p-6 shadow-xs space-y-4">
-            <h2 className="text-base font-bold text-slate-900">Individual Entity CSV Exports</h2>
-            <p className="text-xs text-slate-500">
-              Download clean CSV files for each of the 11 core CRM entities
+          <div className="bg-white dark:bg-[#111C2E] rounded-2xl border border-[#E2E8F0] dark:border-[#263449] p-6 shadow-xs space-y-4">
+            <h2 className="text-base font-bold text-[#0F172A] dark:text-[#F8FAFC]">Individual Entity CSV Exports</h2>
+            <p className="text-xs text-[#64748B] dark:text-[#94A3B8]">
+              Download clean CSV files for each of the 11 core CRM entities.
             </p>
 
             <div className="grid grid-cols-2 md:grid-cols-4 gap-3 text-xs">
-              <button
-                onClick={() => exportEntityAsCSV('Companies', companies)}
-                className="p-3 rounded-lg border border-slate-200 hover:bg-slate-50 flex items-center justify-between text-left cursor-pointer"
-              >
-                <div>
-                  <div className="font-bold text-slate-900">Companies.csv</div>
-                  <div className="text-[11px] text-slate-400">{companies.length} records</div>
-                </div>
-                <Download className="w-4 h-4 text-slate-400" />
-              </button>
-
-              <button
-                onClick={() => exportEntityAsCSV('Contacts', contacts)}
-                className="p-3 rounded-lg border border-slate-200 hover:bg-slate-50 flex items-center justify-between text-left cursor-pointer"
-              >
-                <div>
-                  <div className="font-bold text-slate-900">Contacts.csv</div>
-                  <div className="text-[11px] text-slate-400">{contacts.length} records</div>
-                </div>
-                <Download className="w-4 h-4 text-slate-400" />
-              </button>
-
-              <button
-                onClick={() => exportEntityAsCSV('Leads', leads)}
-                className="p-3 rounded-lg border border-slate-200 hover:bg-slate-50 flex items-center justify-between text-left cursor-pointer"
-              >
-                <div>
-                  <div className="font-bold text-slate-900">Leads.csv</div>
-                  <div className="text-[11px] text-slate-400">{leads.length} records</div>
-                </div>
-                <Download className="w-4 h-4 text-slate-400" />
-              </button>
-
-              <button
-                onClick={() => exportEntityAsCSV('Campaigns', campaigns)}
-                className="p-3 rounded-lg border border-slate-200 hover:bg-slate-50 flex items-center justify-between text-left cursor-pointer"
-              >
-                <div>
-                  <div className="font-bold text-slate-900">Campaigns.csv</div>
-                  <div className="text-[11px] text-slate-400">{campaigns.length} records</div>
-                </div>
-                <Download className="w-4 h-4 text-slate-400" />
-              </button>
-
-              <button
-                onClick={() => exportEntityAsCSV('Activities', activities)}
-                className="p-3 rounded-lg border border-slate-200 hover:bg-slate-50 flex items-center justify-between text-left cursor-pointer"
-              >
-                <div>
-                  <div className="font-bold text-slate-900">Activities.csv</div>
-                  <div className="text-[11px] text-slate-400">{activities.length} records</div>
-                </div>
-                <Download className="w-4 h-4 text-slate-400" />
-              </button>
-
-              <button
-                onClick={() => exportEntityAsCSV('Consents', consents)}
-                className="p-3 rounded-lg border border-slate-200 hover:bg-slate-50 flex items-center justify-between text-left cursor-pointer"
-              >
-                <div>
-                  <div className="font-bold text-slate-900">Consents.csv</div>
-                  <div className="text-[11px] text-slate-400">{consents.length} records</div>
-                </div>
-                <Download className="w-4 h-4 text-slate-400" />
-              </button>
-
-              <button
-                onClick={() => exportEntityAsCSV('Tasks', tasks)}
-                className="p-3 rounded-lg border border-slate-200 hover:bg-slate-50 flex items-center justify-between text-left cursor-pointer"
-              >
-                <div>
-                  <div className="font-bold text-slate-900">Tasks.csv</div>
-                  <div className="text-[11px] text-slate-400">{tasks.length} records</div>
-                </div>
-                <Download className="w-4 h-4 text-slate-400" />
-              </button>
-
-              <button
-                onClick={() => exportEntityAsCSV('Opportunities', opportunities)}
-                className="p-3 rounded-lg border border-slate-200 hover:bg-slate-50 flex items-center justify-between text-left cursor-pointer"
-              >
-                <div>
-                  <div className="font-bold text-slate-900">Opportunities.csv</div>
-                  <div className="text-[11px] text-slate-400">{opportunities.length} records</div>
-                </div>
-                <Download className="w-4 h-4 text-slate-400" />
-              </button>
-
-              <button
-                onClick={() => exportEntityAsCSV('StageHistories', stageHistories)}
-                className="p-3 rounded-lg border border-slate-200 hover:bg-slate-50 flex items-center justify-between text-left cursor-pointer"
-              >
-                <div>
-                  <div className="font-bold text-slate-900">StageHistories.csv</div>
-                  <div className="text-[11px] text-slate-400">{stageHistories.length} records</div>
-                </div>
-                <Download className="w-4 h-4 text-slate-400" />
-              </button>
-
-              <button
-                onClick={() => exportEntityAsCSV('SalesReps', salesReps)}
-                className="p-3 rounded-lg border border-slate-200 hover:bg-slate-50 flex items-center justify-between text-left cursor-pointer"
-              >
-                <div>
-                  <div className="font-bold text-slate-900">SalesReps.csv</div>
-                  <div className="text-[11px] text-slate-400">{salesReps.length} records</div>
-                </div>
-                <Download className="w-4 h-4 text-slate-400" />
-              </button>
-
-              <button
-                onClick={() => exportEntityAsCSV('ScoreRules', scoreRules)}
-                className="p-3 rounded-lg border border-slate-200 hover:bg-slate-50 flex items-center justify-between text-left cursor-pointer"
-              >
-                <div>
-                  <div className="font-bold text-slate-900">ScoreRules.csv</div>
-                  <div className="text-[11px] text-slate-400">{scoreRules.length} records</div>
-                </div>
-                <Download className="w-4 h-4 text-slate-400" />
-              </button>
-
-              <button
-                onClick={() => exportEntityAsCSV('Anomalies', anomalies)}
-                className="p-3 rounded-lg border border-slate-200 hover:bg-slate-50 flex items-center justify-between text-left cursor-pointer"
-              >
-                <div>
-                  <div className="font-bold text-slate-900">Anomalies.csv</div>
-                  <div className="text-[11px] text-slate-400">{anomalies.length} records</div>
-                </div>
-                <Download className="w-4 h-4 text-slate-400" />
-              </button>
+              {[
+                { name: 'Companies.csv', count: companies.length, fn: () => exportEntityAsCSV('Companies', companies) },
+                { name: 'Contacts.csv', count: contacts.length, fn: () => exportEntityAsCSV('Contacts', contacts) },
+                { name: 'Leads.csv', count: leads.length, fn: () => exportEntityAsCSV('Leads', leads) },
+                { name: 'Campaigns.csv', count: campaigns.length, fn: () => exportEntityAsCSV('Campaigns', campaigns) },
+                { name: 'Activities.csv', count: activities.length, fn: () => exportEntityAsCSV('Activities', activities) },
+                { name: 'Consents.csv', count: consents.length, fn: () => exportEntityAsCSV('Consents', consents) },
+                { name: 'Tasks.csv', count: tasks.length, fn: () => exportEntityAsCSV('Tasks', tasks) },
+                { name: 'Opportunities.csv', count: opportunities.length, fn: () => exportEntityAsCSV('Opportunities', opportunities) },
+                { name: 'StageHistories.csv', count: stageHistories.length, fn: () => exportEntityAsCSV('StageHistories', stageHistories) },
+                { name: 'SalesReps.csv', count: salesReps.length, fn: () => exportEntityAsCSV('SalesReps', salesReps) },
+                { name: 'ScoreRules.csv', count: scoreRules.length, fn: () => exportEntityAsCSV('ScoreRules', scoreRules) },
+                { name: 'Anomalies.csv', count: anomalies.length, fn: () => exportEntityAsCSV('Anomalies', anomalies) },
+              ].map(item => (
+                <button
+                  key={item.name}
+                  onClick={item.fn}
+                  className="p-3.5 rounded-xl border border-[#E2E8F0] dark:border-[#263449] bg-[#F8FAFC] dark:bg-[#0B1220] hover:bg-slate-100 dark:hover:bg-slate-800 flex items-center justify-between text-left cursor-pointer transition-colors"
+                >
+                  <div>
+                    <div className="font-bold text-[#0F172A] dark:text-[#F8FAFC]">{item.name}</div>
+                    <div className="text-[11px] text-[#64748B] dark:text-[#94A3B8] tabular-nums">{item.count.toLocaleString()} records</div>
+                  </div>
+                  <Download className="w-4 h-4 text-[#2563EB]" />
+                </button>
+              ))}
             </div>
           </div>
         </div>
@@ -781,76 +683,50 @@ export const DataManagementView: React.FC = () => {
 
       {/* Tab 5: Data Dictionary */}
       {activeTab === 'dictionary' && (
-        <div className="bg-white rounded-xl border border-slate-200 p-6 shadow-xs space-y-4">
-          <h2 className="text-base font-bold text-slate-900">Core CRM Entity Data Dictionary</h2>
-          <p className="text-xs text-slate-500">
-            Formal schema definition for the 11 core entities, primary key formats, cardinality, and validation constraints
+        <div className="bg-white dark:bg-[#111C2E] rounded-2xl border border-[#E2E8F0] dark:border-[#263449] p-6 shadow-xs space-y-4">
+          <h2 className="text-base font-bold text-[#0F172A] dark:text-[#F8FAFC]">Core CRM Entity Data Dictionary</h2>
+          <p className="text-xs text-[#64748B] dark:text-[#94A3B8]">
+            Formal schema definition for the 11 core entities, primary key formats, cardinality, and validation constraints.
           </p>
 
-          <div className="space-y-4 pt-2 text-xs">
-            <div className="border border-slate-200 rounded-lg p-3 bg-slate-50/50">
-              <span className="font-mono font-bold text-purple-700">1. Company</span> • ID: <code className="font-mono font-bold">CO-000001</code>
-              <p className="text-slate-600 mt-1">Enterprise account representing client organizations. Contains size, industry, revenue, and territory boundaries.</p>
-            </div>
-            <div className="border border-slate-200 rounded-lg p-3 bg-slate-50/50">
-              <span className="font-mono font-bold text-purple-700">2. Contact</span> • ID: <code className="font-mono font-bold">CON-000001</code>
-              <p className="text-slate-600 mt-1">Key business persona linked to a company. Enforces normalized email deduplication index and job role seniority.</p>
-            </div>
-            <div className="border border-slate-200 rounded-lg p-3 bg-slate-50/50">
-              <span className="font-mono font-bold text-purple-700">3. Campaign</span> • ID: <code className="font-mono font-bold">CMP-000001</code>
-              <p className="text-slate-600 mt-1">Demand generation master program (Webinar, Outbound, Paid Search). Tracks lead generation and conversion ROI.</p>
-            </div>
-            <div className="border border-slate-200 rounded-lg p-3 bg-slate-50/50">
-              <span className="font-mono font-bold text-purple-700">4. SalesRep</span> • ID: <code className="font-mono font-bold">REP-001</code>
-              <p className="text-slate-600 mt-1">Account executives with assigned territory authorization, product specializations, active capacity limits, and quotas.</p>
-            </div>
-            <div className="border border-slate-200 rounded-lg p-3 bg-slate-50/50">
-              <span className="font-mono font-bold text-purple-700">5. Lead</span> • ID: <code className="font-mono font-bold">LEAD-2026-000001</code>
-              <p className="text-slate-600 mt-1">Central prospect record. Evaluated by Fit (30), Intent (40), Engagement (30) with HOT, WARM, COLD tiers and consent status.</p>
-            </div>
-            <div className="border border-slate-200 rounded-lg p-3 bg-slate-50/50">
-              <span className="font-mono font-bold text-purple-700">6. Activity</span> • ID: <code className="font-mono font-bold">ACT-LEAD-2026-000001-001</code>
-              <p className="text-slate-600 mt-1">Chronological touchpoint event. Includes temporal leakage guard (isPostConversion) to avoid backward contamination.</p>
-            </div>
-            <div className="border border-slate-200 rounded-lg p-3 bg-slate-50/50">
-              <span className="font-mono font-bold text-purple-700">7. Consent</span> • ID: <code className="font-mono font-bold">CS-LEAD-2026-000001-001</code>
-              <p className="text-slate-600 mt-1">Regulatory compliance audit log. Enforces explicit consent verification prior to any automated marketing or sales task.</p>
-            </div>
-            <div className="border border-slate-200 rounded-lg p-3 bg-slate-50/50">
-              <span className="font-mono font-bold text-purple-700">8. ScoreRule</span> • ID: <code className="font-mono font-bold">RULE-001</code>
-              <p className="text-slate-600 mt-1">Effective-dated scoring logic rule. Dictates max points and evaluation criteria across Fit, Intent, and Engagement.</p>
-            </div>
-            <div className="border border-slate-200 rounded-lg p-3 bg-slate-50/50">
-              <span className="font-mono font-bold text-purple-700">9. Task</span> • ID: <code className="font-mono font-bold">TASK-LEAD-2026-000001-001</code>
-              <p className="text-slate-600 mt-1">Automated sales SLA task. HOT: 1-day SLA, WARM: 3-day SLA, COLD: Nurture. Enforces idempotency checks.</p>
-            </div>
-            <div className="border border-slate-200 rounded-lg p-3 bg-slate-50/50">
-              <span className="font-mono font-bold text-purple-700">10. Opportunity</span> • ID: <code className="font-mono font-bold">OPP-2026-000001</code>
-              <p className="text-slate-600 mt-1">Qualified sales deal. Enforces single active deal per lead and mandatory documented won/lost reasons.</p>
-            </div>
-            <div className="border border-slate-200 rounded-lg p-3 bg-slate-50/50">
-              <span className="font-mono font-bold text-purple-700">11. StageHistory</span> • ID: <code className="font-mono font-bold">STG-OPP-2026-000001-001</code>
-              <p className="text-slate-600 mt-1">Immutable audit log for each opportunity stage progression. Tracks duration in prior stage, authorizer, and transition reason.</p>
-            </div>
+          <div className="space-y-3 pt-2 text-xs">
+            {[
+              { id: '1. Company', code: 'CO-000001', desc: 'Enterprise account representing client organizations. Contains size, industry, revenue, and territory boundaries.' },
+              { id: '2. Contact', code: 'CON-000001', desc: 'Key business persona linked to a company. Enforces normalized email deduplication index and job role seniority.' },
+              { id: '3. Campaign', code: 'CMP-000001', desc: 'Demand generation master program (Webinar, Outbound, Paid Search). Tracks lead generation and conversion ROI.' },
+              { id: '4. SalesRep', code: 'REP-001', desc: 'Account executives with assigned territory authorization, product specializations, active capacity limits, and quotas.' },
+              { id: '5. Lead', code: 'LEAD-2026-000001', desc: 'Central prospect record. Evaluated by Fit (30), Intent (40), Engagement (30) with HOT, WARM, COLD tiers and consent status.' },
+              { id: '6. Activity', code: 'ACT-LEAD-2026-000001-001', desc: 'Chronological touchpoint event. Includes temporal leakage guard (isPostConversion) to avoid backward contamination.' },
+              { id: '7. Consent', code: 'CS-LEAD-2026-000001-001', desc: 'Regulatory compliance audit log. Enforces explicit consent verification prior to any automated marketing or sales task.' },
+              { id: '8. ScoreRule', code: 'RULE-001', desc: 'Effective-dated scoring logic rule. Dictates max points and evaluation criteria across Fit, Intent, and Engagement.' },
+              { id: '9. Task', code: 'TASK-LEAD-2026-000001-001', desc: 'Automated sales SLA task. HOT: 1-day SLA, WARM: 3-day SLA, COLD: Nurture. Enforces idempotency checks.' },
+              { id: '10. Opportunity', code: 'OPP-2026-000001', desc: 'Qualified sales deal. Enforces single active deal per lead and mandatory documented won/lost reasons.' },
+              { id: '11. StageHistory', code: 'STG-OPP-2026-000001-001', desc: 'Immutable audit log for each opportunity stage progression. Tracks duration in prior stage, authorizer, and transition reason.' },
+            ].map(entity => (
+              <div key={entity.id} className="border border-[#E2E8F0] dark:border-[#263449] rounded-xl p-3.5 bg-[#F8FAFC] dark:bg-[#0B1220]">
+                <span className="font-semibold text-[#2563EB] dark:text-[#3B82F6]">{entity.id}</span> • ID: <code className="font-mono font-bold text-[#0F172A] dark:text-[#F8FAFC]">{entity.code}</code>
+                <p className="text-[#64748B] dark:text-[#94A3B8] mt-1">{entity.desc}</p>
+              </div>
+            ))}
           </div>
         </div>
       )}
 
       {/* Tab 6: Synthetic Source Manifest */}
       {activeTab === 'manifest' && (
-        <div className="bg-white rounded-xl border border-slate-200 p-6 shadow-xs space-y-4">
+        <div className="bg-white dark:bg-[#111C2E] rounded-2xl border border-[#E2E8F0] dark:border-[#263449] p-6 shadow-xs space-y-4">
           <div className="flex items-center gap-2">
             <ShieldCheck className="w-5 h-5 text-emerald-600" />
-            <h2 className="text-base font-bold text-slate-900">Synthetic Source Manifest</h2>
+            <h2 className="text-base font-bold text-[#0F172A] dark:text-[#F8FAFC]">Synthetic Source Manifest</h2>
           </div>
 
-          <div className="p-4 rounded-xl bg-slate-50 border border-slate-200 text-xs font-mono space-y-2 text-slate-800">
+          <div className="p-5 rounded-2xl bg-[#F8FAFC] dark:bg-[#0B1220] border border-[#E2E8F0] dark:border-[#263449] text-xs font-mono space-y-2 text-[#0F172A] dark:text-[#F8FAFC]">
             <div><strong>PLATFORM:</strong> {SYNTHETIC_SOURCE_MANIFEST.platform}</div>
             <div><strong>ENVIRONMENT:</strong> {SYNTHETIC_SOURCE_MANIFEST.environment}</div>
             <div><strong>VERSION:</strong> {SYNTHETIC_SOURCE_MANIFEST.datasetVersion}</div>
             <div><strong>DETERMINISTIC SEED:</strong> {SYNTHETIC_SOURCE_MANIFEST.fixedSeed}</div>
             <div><strong>ENTITIES COUNT:</strong> {SYNTHETIC_SOURCE_MANIFEST.primaryEntitiesCount}</div>
-            <div className="pt-2 border-t border-slate-200 text-slate-600 leading-relaxed font-sans">
+            <div className="pt-3 border-t border-[#E2E8F0] dark:border-[#263449] text-[#64748B] dark:text-[#94A3B8] leading-relaxed font-sans">
               <strong>LEGAL NOTICE:</strong> {SYNTHETIC_SOURCE_MANIFEST.legalNotice}
             </div>
           </div>

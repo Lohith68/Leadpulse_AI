@@ -47,24 +47,24 @@ export const Modal: React.FC<ModalProps> = ({
 
       <div className="flex min-h-full items-center justify-center p-4 text-center sm:p-0">
         <div
-          className={`relative transform overflow-hidden rounded-xl bg-white text-left shadow-2xl transition-all sm:my-8 w-full ${maxWidthClasses[maxWidth]} border border-slate-200`}
+          className={`relative transform overflow-hidden rounded-2xl bg-white dark:bg-[#111C2E] text-left shadow-2xl transition-all sm:my-8 w-full ${maxWidthClasses[maxWidth]} border border-[#E2E8F0] dark:border-[#263449]`}
         >
           {/* Header */}
-          <div className="flex items-start justify-between border-b border-slate-100 px-6 py-4 bg-slate-50/50">
+          <div className="flex items-start justify-between border-b border-[#E2E8F0] dark:border-[#263449] px-6 py-4 bg-[#F8FAFC] dark:bg-[#0B1220]">
             <div>
-              <h3 className="text-lg font-bold text-slate-900">{title}</h3>
-              {subtitle && <p className="text-xs text-slate-500 mt-0.5">{subtitle}</p>}
+              <h3 className="text-lg font-bold text-[#0F172A] dark:text-[#F8FAFC]">{title}</h3>
+              {subtitle && <p className="text-xs text-[#64748B] dark:text-[#94A3B8] mt-0.5">{subtitle}</p>}
             </div>
             <button
               onClick={onClose}
-              className="text-slate-400 hover:text-slate-600 transition-colors p-1 rounded-md hover:bg-slate-100"
+              className="text-[#64748B] dark:text-[#94A3B8] hover:text-[#0F172A] dark:hover:text-white transition-colors p-1.5 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800"
             >
               <X className="w-5 h-5" />
             </button>
           </div>
 
           {/* Content */}
-          <div className="px-6 py-5 max-h-[80vh] overflow-y-auto">{children}</div>
+          <div className="px-6 py-5 max-h-[80vh] overflow-y-auto text-[#0F172A] dark:text-[#F8FAFC]">{children}</div>
         </div>
       </div>
     </div>

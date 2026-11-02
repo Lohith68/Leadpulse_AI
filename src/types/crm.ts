@@ -362,3 +362,72 @@ export interface EvaluationMetrics {
   evaluationTimestamp: string;
   splitMethod: 'Chronological (Held-out)' | 'Deterministic Seed (80/20)';
 }
+
+// User & Role-Based Access Control
+export type UserStatus = 'active' | 'inactive';
+
+export interface CRMUser {
+  uid: string;
+  name: string;
+  email: string;
+  role: UserRole;
+  status: UserStatus;
+  assignedTerritory?: Territory;
+  phone?: string;
+  createdAt: string;
+  updatedAt: string;
+  lastLoginAt?: string;
+  isInitialAdmin?: boolean;
+}
+
+// System Audit Log Entry
+export interface SystemAuditLog {
+  id: string;
+  timestamp: string;
+  userId: string;
+  userEmail: string;
+  role: UserRole;
+  action: string;
+  targetRecord?: string;
+  details?: string;
+  status: 'SUCCESS' | 'FAILED' | 'BLOCKED';
+  ipAddress?: string;
+}
+
+// RBAC Permissions & Resources
+export type PermissionAction =
+  | 'view'
+  | 'create'
+  | 'edit'
+  | 'delete'
+  | 'assign'
+  | 'export'
+  | 'wipe'
+  | 'manage_rules'
+  | 'manage_users'
+  | 'manage_settings'
+  | 'advance_stage'
+  | 'log_activity'
+  | 'record_consent';
+
+export type Resource =
+  | 'dashboard'
+  | 'leads'
+  | 'companies'
+  | 'contacts'
+  | 'campaigns'
+  | 'activities'
+  | 'scoring_rules'
+  | 'sales_reps'
+  | 'tasks'
+  | 'opportunities'
+  | 'stage_history'
+  | 'anomalies'
+  | 'consent'
+  | 'analytics'
+  | 'data_management'
+  | 'validation_center'
+  | 'audit_logs'
+  | 'user_management'
+  | 'settings';
+
